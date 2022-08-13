@@ -1,6 +1,6 @@
-import { initializeApp, getApps } from 'firebase/app';
-import "firebase/auth";
-import "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 
 function InitFirebase(): void {
   const firebaseConfig = {
@@ -14,8 +14,8 @@ function InitFirebase(): void {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
   
-  if (!getApps().length) {
-    initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
   }
 }
 
