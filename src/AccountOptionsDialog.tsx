@@ -1,11 +1,13 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { FC, useContext } from 'react';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { FC, useContext, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 
 import { UserContext } from './context';
 import firebase, { authProvider } from './firebase';
+
+import Filter from "bad-words";
 
 interface AccountOptionsProps {
     open: boolean,
@@ -15,6 +17,9 @@ interface AccountOptionsProps {
 const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
 
     const user: any = useContext(UserContext);
+    const [nameValue, setNameValue] = useState("");
+    const maxNameLength = 25;
+    const filter = new Filter();
 
     function handleLogin(): void {
         firebase
@@ -33,6 +38,29 @@ const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
 
     function handleLogout(): void {
         firebase.auth().signOut();
+    }
+
+    function handleKeyDown(event: React.KeyboardEvent): void {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          handleSubmit();
+        }
+    }
+
+    function handleSubmit(): void {
+        if (filter.isProfane(nameValue)) {
+            alert("Detected that input is profane. Please choose a more appropriate input.");
+        } else {
+            handleChangeName(nameValue)
+            setNameValue("");
+        }
+    }
+
+    function handleChangeName(name: string): void {
+        name = (name || "").trim();
+        if (name) {
+            firebase.database().ref(`users/${user.id}/name`).set(name);
+        }
     }
 
     return (
@@ -69,6 +97,26 @@ const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
                     </DialogContentText>
                 </DialogContent>
             )}
+            <DialogContent>
+                <DialogContentText gutterBottom>
+                    Your display name is&nbsp;
+                    <span style={{ color: '#03b6fc' }}>{user?.name}</span>
+                    . You can change it here:
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Name"
+                    type="text"
+                    fullWidth
+                    value={nameValue}
+                    onChange={(e) => setNameValue(e.target.value)}
+                    variant="outlined"
+                    onKeyDown={handleKeyDown}
+                    inputProps={{ maxNameLength }}
+                />
+            </DialogContent>
         </Dialog>
     )
 }
