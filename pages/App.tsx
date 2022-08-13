@@ -86,7 +86,10 @@ const App:NextPage = () => {
         </h1>
 
         <p className={styles.description}>
-            You are logged in as {user ? user['name'] : "..."}
+            You are logged in as&nbsp; 
+            <a href="https://www.google.com" className={styles.link}>
+                { user ? user['name'] : "..." }
+            </a>
             {/* <Button
             onClick={handleLogin}
             >

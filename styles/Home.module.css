@@ -127,3 +127,9 @@
     filter: invert(1);
   }
 }
+
+.link {
+  color: #03b6fc;
+  text-decoration: underline;
+  /* font-weight: 500; */
+}
