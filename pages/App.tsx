@@ -96,12 +96,12 @@ const App:NextPage = () => {
         <div className={styles.grid}>
             <a href="/room" className={styles.card}>
             <h2>Play &rarr;</h2>
-            <p>Create an options open outcry game.</p>
+            <p>Create an open outcry game.</p>
             </a>
 
             <a href="/info" className={styles.card}>
             <h2>Info &rarr;</h2>
-            <p>Learn how to play and helpful formulas.</p>
+            <p>Rules, helpful formulas, and other information.</p>
             </a>
         </div>
         </main>
