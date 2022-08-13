@@ -1,11 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
-import Button from '@mui/material/Button';
-import handleLogin from '../firebase/auth';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { useState, useEffect } from 'react';
@@ -15,12 +11,14 @@ import 'firebase/compat/auth';
 import 'firebase/compat/database';
 
 import { generateName } from '../src/utilities'
+import AccountOptionsDialog from './AccountOptionsDialog'
 
 const App:NextPage = () => {
 
     // Code mirrored after https://github.com/ekzhang/setwithfriends
     const [authUser, setAuthUser] = useState<firebase.User | null>(null);
     const [user, setUser] = useState(null);
+    const [showAccountOptions, setShowAccountOptions] = useState(false);
 
     useEffect(() => {
         return firebase.auth().onAuthStateChanged((user) => {
@@ -87,20 +85,19 @@ const App:NextPage = () => {
 
         <p className={styles.description}>
             You are logged in as&nbsp; 
-            <a href="https://www.google.com" className={styles.link}>
+            <span onClick={() => setShowAccountOptions(true)} className={styles.link}>
                 { user ? user['name'] : "..." }
-            </a>
-            {/* <Button
-            onClick={handleLogin}
-            >
-            Sign in with Google
-            </Button> */}
+            </span>
+            <AccountOptionsDialog
+                open={showAccountOptions}
+                onClose={() => setShowAccountOptions(false)}
+            />
         </p>
 
         <div className={styles.grid}>
             <a href="/room" className={styles.card}>
             <h2>Play &rarr;</h2>
-            <p>Create an open outcry game.</p>
+            <p>Create or join an open outcry game.</p>
             </a>
 
             <a href="/info" className={styles.card}>
