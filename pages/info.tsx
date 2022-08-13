@@ -2,20 +2,12 @@ import type { NextPage } from 'next'
 
 import { Container } from '@mui/system'
 import { Typography, Link, Paper } from '@mui/material'
-import { AppBar, Toolbar } from '@mui/material'
+import Navbar from '../src/Navbar'
 
 const Info:NextPage = () => {
     return (
         <Container>
-            <AppBar elevation={0}>
-                <Toolbar variant="dense">
-                    <Typography variant="h6" style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
-                        <Link href="/" underline="none" color="inherit">
-                            Options Open Outcry
-                        </Link>
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+            <Navbar/>
             <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
                 Info
             </Typography>
@@ -48,7 +40,7 @@ const Info:NextPage = () => {
                 <Link href="/">Return to home</Link>
             </Typography>
         </Container>
-    )
+    );
 }
 
 export default Info 
