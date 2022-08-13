@@ -12,6 +12,7 @@ import 'firebase/compat/database';
 
 import { generateName } from '../src/utilities'
 import AccountOptionsDialog from './AccountOptionsDialog'
+import { UserContext } from './context';
 
 const App:NextPage = () => {
 
@@ -83,16 +84,18 @@ const App:NextPage = () => {
             Options Open Outcry
         </h1>
 
-        <p className={styles.description}>
-            You are logged in as&nbsp; 
-            <span onClick={() => setShowAccountOptions(true)} className={styles.link}>
-                { user ? user['name'] : "..." }
-            </span>
-            <AccountOptionsDialog
-                open={showAccountOptions}
-                onClose={() => setShowAccountOptions(false)}
-            />
-        </p>
+        <UserContext.Provider value={user}>
+            <p className={styles.description}>
+                You are logged in as&nbsp; 
+                <span onClick={() => setShowAccountOptions(true)} className={styles.link}>
+                    { user ? user['name'] : "..." }
+                </span>
+                <AccountOptionsDialog
+                    open={showAccountOptions}
+                    onClose={() => setShowAccountOptions(false)}
+                />
+            </p>
+        </UserContext.Provider>
 
         <div className={styles.grid}>
             <a href="/room" className={styles.card}>
