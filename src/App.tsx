@@ -3,6 +3,8 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import { useState, useEffect } from 'react';
 
@@ -20,6 +22,29 @@ const App:NextPage = () => {
     const [authUser, setAuthUser] = useState<firebase.User | null>(null);
     const [user, setUser] = useState(null);
     const [showAccountOptions, setShowAccountOptions] = useState(false);
+
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
+    const lightTheme = createTheme({
+        palette: {
+          mode: 'light',
+        },
+    });
+    const darkTheme = createTheme({
+        palette: {
+          mode: 'dark',
+        },
+    });
+    useEffect(() => {
+        const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+        if (darkThemeMq.matches) {
+            console.log("Setting theme to dark");
+            setIsDarkTheme(true);
+          } else {
+            console.log("Setting theme to light");
+            setIsDarkTheme(false);
+          }
+          
+    }, []);
 
     useEffect(() => {
         return firebase.auth().onAuthStateChanged((user) => {
@@ -72,56 +97,59 @@ const App:NextPage = () => {
     }, [authUser]);
 
     return (
-    <div className={styles.container}>
-        <Head>
-        <title>Options Outcry</title>
-        <meta name="description" content="Options Open Outcry Simulator" />
-        <link rel="icon" href="/favicon.ico" />
-        </Head>
+    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+        <CssBaseline/>
+        <div className={styles.container}>
+            <Head>
+            <title>Options Outcry</title>
+            <meta name="description" content="Options Open Outcry Simulator" />
+            <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-        <main className={styles.main}>
-        <h1 className={styles.title}>
-            Options Open Outcry
-        </h1>
+            <main className={styles.main}>
+            <h1 className={styles.title}>
+                Options Open Outcry
+            </h1>
 
-        <UserContext.Provider value={user}>
-            <p className={styles.description}>
-                You are logged in as&nbsp; 
-                <span onClick={() => setShowAccountOptions(true)} className={styles.link}>
-                    { user ? user['name'] : "..." }
+            <UserContext.Provider value={user}>
+                <p className={styles.description}>
+                    You are logged in as&nbsp; 
+                    <span onClick={() => setShowAccountOptions(true)} className={styles.link}>
+                        { user ? user['name'] : "..." }
+                    </span>
+                    <AccountOptionsDialog
+                        open={showAccountOptions}
+                        onClose={() => setShowAccountOptions(false)}
+                    />
+                </p>
+            </UserContext.Provider>
+
+            <div className={styles.grid}>
+                <a href="/room" className={styles.card}>
+                <h2>Play &rarr;</h2>
+                <p>Create or join an open outcry game.</p>
+                </a>
+
+                <a href="/info" className={styles.card}>
+                <h2>Info &rarr;</h2>
+                <p>Rules, helpful formulas, and other information.</p>
+                </a>
+            </div>
+            </main>
+
+            <footer className={styles.footer}>
+            <a
+                href="https://github.com/tonyb7/options-outcry"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <span className={styles.logo}>
+                    <GitHubIcon/>
                 </span>
-                <AccountOptionsDialog
-                    open={showAccountOptions}
-                    onClose={() => setShowAccountOptions(false)}
-                />
-            </p>
-        </UserContext.Provider>
-
-        <div className={styles.grid}>
-            <a href="/room" className={styles.card}>
-            <h2>Play &rarr;</h2>
-            <p>Create or join an open outcry game.</p>
             </a>
-
-            <a href="/info" className={styles.card}>
-            <h2>Info &rarr;</h2>
-            <p>Rules, helpful formulas, and other information.</p>
-            </a>
+            </footer>
         </div>
-        </main>
-
-        <footer className={styles.footer}>
-        <a
-            href="https://github.com/tonyb7/options-outcry"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <span className={styles.logo}>
-                <GitHubIcon/>
-            </span>
-        </a>
-        </footer>
-    </div>
+    </ThemeProvider>
     )
 }
 
