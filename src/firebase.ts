@@ -19,4 +19,6 @@ function InitFirebase(): void {
   }
 }
 
-export default InitFirebase
+InitFirebase()
+export const authProvider = new firebase.auth.GoogleAuthProvider();
+export default firebase
