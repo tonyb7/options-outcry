@@ -50,6 +50,7 @@ const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
     function handleSubmit(): void {
         if (filter.isProfane(nameValue)) {
             alert("Detected that input is profane. Please choose a more appropriate input.");
+            setNameValue("");
         } else {
             handleChangeName(nameValue)
             setNameValue("");
