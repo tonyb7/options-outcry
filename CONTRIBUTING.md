@@ -24,3 +24,18 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 ```
+
+## Firebase Functions Emulator
+Setting up an local emulator for local testing.
+
+1. After changes are made in cloud functions (e.g., `functions/src/index.ts`):
+```bash
+cd functions
+npm run build
+```
+This step is required or else the changes don't get reflected in the emulator. Seems like a bug in the firebase emulator.
+
+2. Start the emulator with `firebase emulators:start --only functions`
+
+3. In development, the emulator should be picked up by firebase, see `src/firebase.ts`
+

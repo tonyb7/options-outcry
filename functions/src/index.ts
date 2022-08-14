@@ -8,6 +8,14 @@
 //   response.send("Hello from Firebase!");
 // });
 
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+
 admin.initializeApp();
+
+/* eslint-disable */
+export const createGame = functions.https.onCall(async (data: any, context: any) => {
+    const gameId = data.gameId;
+    console.log("Creating game ", gameId);
+    console.log("Ypoooooooo2222")
+});

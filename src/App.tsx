@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -18,6 +19,7 @@ import { UserContext } from './context';
 
 import generate from "project-name-generator";
 import { useRouter } from 'next/router'
+import { createGame } from './firebase';
 
 const App:NextPage = () => {
 
@@ -112,11 +114,10 @@ const App:NextPage = () => {
             attempts++;
             const gameId = generate({ words: 3 }).dashed;
             try {
-                // await createGame({ gameId }); // TODO
-            } catch (error: any) { // TODO
+                await createGame({ gameId });
+            } catch (error: any) {
                 if (error.code === "functions/already-exists") {
                     // We generated an already-used game ID
-                    ++attempts;
                     continue;
                 } else {
                     // Unspecified error occurred
@@ -169,10 +170,10 @@ const App:NextPage = () => {
                 <p>Create or join an open outcry game.</p>
                 </span>
 
-                <a href="/info" className={styles.card}>
-                <h2>Info &rarr;</h2>
-                <p>Rules, helpful formulas, and other information.</p>
-                </a>
+                <span onClick={() => router.push(`/info`)} className={styles.card}>
+                    <h2>Info &rarr;</h2>
+                    <p>Rules, helpful formulas, and other information.</p>
+                </span>
             </div>
             </main>
 
