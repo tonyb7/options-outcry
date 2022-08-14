@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
-import App from '../src/App';
+import Homepage from '../src/Homepage';
 
 const Home: NextPage = () => {
   return (
-      <App/>
+      <Homepage/>
   )
 }
 

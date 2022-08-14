@@ -17,7 +17,7 @@ import generate from "project-name-generator";
 import { useRouter } from 'next/router'
 import { createGame } from './firebase';
 
-const App:NextPage = () => {
+const Homepage:NextPage = () => {
 
     const user: any = useContext(UserContext);
     const [showAccountOptions, setShowAccountOptions] = useState(false);
@@ -108,4 +108,4 @@ const App:NextPage = () => {
     )
 }
 
-export default App 
+export default Homepage 
