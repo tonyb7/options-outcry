@@ -2,39 +2,56 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 import { Container } from '@mui/system'
-import { Typography } from '@mui/material'
+import { Typography, Link } from '@mui/material'
 import Navbar from '../../src/Navbar'
 
 import firebase from '../../src/firebase'
 import "firebase/compat/database"
 
+import { useState } from 'react'
+
 const WaitingRoom:NextPage = () => {
 
+    const [exists, setExists] = useState(false);
     const router = useRouter()
     const { id } = router.query
-    console.log("game id: ", id)
-    const gameRef = firebase.database().ref(`games/${id}`).once("value", snapshot => {
+
+    firebase.database().ref(`games/${id}`).once("value", snapshot => {
         if (snapshot.exists()){
-            console.log("exists!");
-            console.log(snapshot.val());
+            setExists(true);
         } 
         else {
-            console.log("does not exist!");
-            console.log(snapshot.val());
+            setExists(false);
         }
     });
-    console.log("gameRef: ", gameRef);
 
     return (
         <Container>
             <Navbar/>
-            <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
-                Waiting Room
-            </Typography>
-            <Typography variant="h6" align="center" style={{ marginTop: 90 }}>
-                {id}
-            </Typography>
-
+            {exists ? (
+                <Container>
+                    <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
+                        Waiting Room
+                    </Typography>
+                    <Typography variant="h6" align="center" style={{ marginTop: 0 }}>
+                        {id}
+                    </Typography>
+                </Container>
+            ) : (
+                <Container>
+                    <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
+                        Loading...
+                    </Typography>
+                    <Typography variant="h6" align="center" style={{ marginTop: 20 }}>
+                        If the page does not load for more than 5 seconds, this game does not exist.
+                        Visit the{" "}
+                        <Link href="/">
+                            homepage
+                        </Link>
+                        {" "}to create a game.
+                    </Typography>
+                </Container>
+            )}
         </Container>
     );
 }
