@@ -9,10 +9,7 @@
 Create a firebase project and do the following:
 
 1. Go to authentication, and enable the `Anonymous` and `Google` sign-in methods. 
-2. Create a `Realtime Database` and set the following security rules:
-```
-TODO (ask me for them for now)
-```
+2. Create a `Realtime Database` and paste in the following security rules from [`database.rules.json`](database.rules.json).
 3. Create a `Web App`. Create a file named `.env.local` (template below) in the root of the project and paste in the appropriate values that are given to you.
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=
