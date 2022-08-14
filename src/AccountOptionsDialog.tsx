@@ -14,11 +14,12 @@ interface AccountOptionsProps {
     onClose: () => void,
 }
 
+const maxnamelength = 25;
+
 const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
 
     const user: any = useContext(UserContext);
     const [nameValue, setNameValue] = useState("");
-    const maxNameLength = 25;
     const filter = new Filter();
 
     function handleLogin(): void {
@@ -115,7 +116,7 @@ const AccountOptionsDialog: FC<AccountOptionsProps> = ({open, onClose}) => {
                     onChange={(e) => setNameValue(e.target.value)}
                     variant="outlined"
                     onKeyDown={handleKeyDown}
-                    inputProps={{ maxNameLength }}
+                    inputProps={{ maxnamelength }}
                 />
             </DialogContent>
         </Dialog>

@@ -1,5 +1,6 @@
 {
     "rules": {
+        "read": "auth != null",
         "users": {
             "$uid": {
                 ".read": "auth != null",

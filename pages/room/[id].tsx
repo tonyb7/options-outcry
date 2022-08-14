@@ -5,12 +5,25 @@ import { Container } from '@mui/system'
 import { Typography } from '@mui/material'
 import Navbar from '../../src/Navbar'
 
+import firebase from '../../src/firebase'
+import "firebase/compat/database"
 
 const WaitingRoom:NextPage = () => {
 
     const router = useRouter()
     const { id } = router.query
-    // TODO: look up id in database, if not exist, 404 not found
+    console.log("game id: ", id)
+    const gameRef = firebase.database().ref(`games/${id}`).once("value", snapshot => {
+        if (snapshot.exists()){
+            console.log("exists!");
+            console.log(snapshot.val());
+        } 
+        else {
+            console.log("does not exist!");
+            console.log(snapshot.val());
+        }
+    });
+    console.log("gameRef: ", gameRef);
 
     return (
         <Container>
