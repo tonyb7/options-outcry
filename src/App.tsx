@@ -16,12 +16,18 @@ import { generateName } from '../src/utilities'
 import AccountOptionsDialog from './AccountOptionsDialog'
 import { UserContext } from './context';
 
+import generate from "project-name-generator";
+import { useRouter } from 'next/router'
+
 const App:NextPage = () => {
 
     // Code mirrored after https://github.com/ekzhang/setwithfriends
     const [authUser, setAuthUser] = useState<firebase.User | null>(null);
     const [user, setUser] = useState(null);
     const [showAccountOptions, setShowAccountOptions] = useState(false);
+
+    const [waiting, setWaiting] = useState(false);  
+    const router = useRouter()
 
     const [isDarkTheme, setIsDarkTheme] = useState(false);
     const lightTheme = createTheme({
@@ -96,6 +102,39 @@ const App:NextPage = () => {
         }
     }, [authUser]);
 
+    async function newRoom(): Promise<void> {
+        if (waiting) { // prevent user from mass-creating games
+            return;
+        }
+        setWaiting(true);
+        let attempts = 0;
+        while (attempts < 5) {
+            attempts++;
+            const gameId = generate({ words: 3 }).dashed;
+            try {
+                // await createGame({ gameId }); // TODO
+            } catch (error: any) { // TODO
+                if (error.code === "functions/already-exists") {
+                    // We generated an already-used game ID
+                    ++attempts;
+                    continue;
+                } else {
+                    // Unspecified error occurred
+                    setWaiting(false);
+                    alert(error.toString());
+                    return;
+                }
+            }
+            // Successful game creation
+            firebase.analytics().logEvent("create_game", { gameId });
+            router.push(`/room/${gameId}`)
+            return;
+        }
+        // Unsuccessful game creation
+        setWaiting(false);
+        alert("Error: Could not find an available game ID.");
+    }
+
     return (
     <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
         <CssBaseline/>
@@ -125,10 +164,10 @@ const App:NextPage = () => {
             </UserContext.Provider>
 
             <div className={styles.grid}>
-                <a href="/room" className={styles.card}>
+                <span onClick={() => newRoom()} className={styles.card}>
                 <h2>Play &rarr;</h2>
                 <p>Create or join an open outcry game.</p>
-                </a>
+                </span>
 
                 <a href="/info" className={styles.card}>
                 <h2>Info &rarr;</h2>
