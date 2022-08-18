@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 
 import { Container } from '@mui/system'
 import { Typography, Link } from '@mui/material'
+
 import Navbar from '../../src/Navbar'
 
 import firebase from '../../src/firebase'
@@ -10,25 +11,19 @@ import "firebase/compat/database"
 
 import { useState } from 'react'
 
+import useFirebaseRef from '../../hooks/useFirebaseRef'
+
 const WaitingRoom:NextPage = () => {
 
-    const [exists, setExists] = useState(false);
     const router = useRouter()
     const { id } = router.query
-
-    firebase.database().ref(`games/${id}`).once("value", snapshot => {
-        if (snapshot.exists()){
-            setExists(true);
-        } 
-        else {
-            setExists(false);
-        }
-    });
+    const [game, _] = useFirebaseRef(`games/${id}`, true);
+    
 
     return (
         <Container>
             <Navbar/>
-            {exists ? (
+            {game ? (
                 <Container>
                     <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
                         Waiting Room

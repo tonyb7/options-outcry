@@ -1,5 +1,5 @@
 import { AppBar, Toolbar } from '@mui/material'
-import { Typography, Link } from '@mui/material'
+import { Typography, Link, Tooltip } from '@mui/material'
 
 import { useContext } from 'react'
 import { UserContext } from './context'
@@ -16,7 +16,9 @@ const Navbar = () => {
                     </Link>
                 </Typography>
                 <Typography variant="h6" style={{ marginLeft: "2em", marginRight: 8, minWidth: 0, color: '#03b6fc' }}>
-                    {user?.name}
+                    <Tooltip title="Return to homepage to change name">
+                        <span>{user?.name}</span>
+                    </Tooltip>
                 </Typography>
             </Toolbar>
         </AppBar>
