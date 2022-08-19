@@ -64,22 +64,32 @@ const GameRoom:NextPage = () => {
                                         justifyContent="center"
                                         alignItems="center"
                                         >
-                                            <Button
-                                                size="medium"
-                                                disabled={false}
-                                                onClick={() => {}}
-                                                style={{ color: "#f2687f" }}
+                                            <Tooltip                             
+                                            arrow
+                                            title="Click to sell"
                                             >
-                                                62.31
-                                            </Button>
-                                            <Button
-                                                size="medium"
-                                                disabled={false}
-                                                onClick={() => {}}
-                                                style={{ color: "#17bd5f" }}
+                                                <Button
+                                                    size="medium"
+                                                    disabled={false}
+                                                    onClick={() => {}}
+                                                    style={{ color: "#f2687f" }}
+                                                >
+                                                    62.31
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip                             
+                                            arrow
+                                            title="Click to buy"
                                             >
-                                                62.36
-                                            </Button>
+                                                <Button
+                                                    size="medium"
+                                                    disabled={false}
+                                                    onClick={() => {}}
+                                                    style={{ color: "#17bd5f" }}
+                                                >
+                                                    62.36
+                                                </Button>
+                                            </Tooltip>
                                         </Box>
                                     </Grid>
                                     <Grid item xs={2}>
