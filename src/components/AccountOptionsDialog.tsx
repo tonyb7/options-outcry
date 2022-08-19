@@ -4,8 +4,8 @@ import { FC, useContext, useState } from 'react';
 import Button from '@mui/material/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 
-import { UserContext } from './context';
-import firebase, { authProvider } from './firebase';
+import { UserContext } from '../context';
+import firebase, { authProvider } from '../firebase';
 
 import Filter from "bad-words";
 

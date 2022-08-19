@@ -4,9 +4,9 @@ import { useRouter } from 'next/router'
 import { Container } from '@mui/system'
 import { Typography, Link } from '@mui/material'
 
-import Navbar from '../../src/Navbar'
+import Navbar from '../../components/Navbar'
 
-import firebase from '../../src/firebase'
+import firebase from '../../firebase'
 import "firebase/compat/database"
 
 import { useState } from 'react'
@@ -17,8 +17,7 @@ const WaitingRoom:NextPage = () => {
 
     const router = useRouter()
     const { id } = router.query
-    const [game, _] = useFirebaseRef(`games/${id}`, true);
-    
+    const [game, gameLoading] = useFirebaseRef(`games/${id}`, true);
 
     return (
         <Container>

@@ -1,15 +1,15 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
-import '../src/firebase' // initialize firebase
+import '../firebase' // initialize firebase
 
 import { useState, useEffect } from 'react';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { UserContext } from '../src/context';
-import { generateName } from '../src/utilities'
+import { UserContext } from '../context';
+import { generateName } from '../utilities'
 
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';

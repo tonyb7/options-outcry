@@ -2,7 +2,7 @@ import { AppBar, Toolbar } from '@mui/material'
 import { Typography, Link, Tooltip } from '@mui/material'
 
 import { useContext } from 'react'
-import { UserContext } from './context'
+import { UserContext } from '../context'
 
 const Navbar = () => {
     const user: any = useContext(UserContext);

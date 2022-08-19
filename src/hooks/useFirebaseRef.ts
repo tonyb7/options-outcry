@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import firebase from "../src/firebase";
+import firebase from "../firebase";
 
 function useFirebaseRef(path: string, once = false) {
   const [value, setValue] = useState(null);

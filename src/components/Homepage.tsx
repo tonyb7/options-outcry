@@ -11,11 +11,11 @@ import 'firebase/compat/auth';
 import 'firebase/compat/database';
 
 import AccountOptionsDialog from './AccountOptionsDialog'
-import { UserContext } from './context';
+import { UserContext } from '../context';
 
 import generate from "project-name-generator";
 import { useRouter } from 'next/router'
-import { createGame } from './firebase';
+import { createGame } from '../firebase';
 
 const Homepage:NextPage = () => {
 

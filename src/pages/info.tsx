@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 
 import { Container } from '@mui/system'
 import { Typography, Link, Paper } from '@mui/material'
-import Navbar from '../src/Navbar'
+import Navbar from '../components/Navbar'
 
 const Info:NextPage = () => {
     return (
