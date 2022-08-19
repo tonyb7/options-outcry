@@ -48,7 +48,7 @@ const Homepage:NextPage = () => {
             }
             // Successful game creation
             firebase.analytics().logEvent("create_game", { gameId });
-            router.push(`/room/${gameId}`)
+            router.push(`/room/${gameId}`);
             return;
         }
         // Unsuccessful game creation

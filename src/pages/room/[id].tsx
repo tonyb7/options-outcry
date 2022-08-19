@@ -6,7 +6,7 @@ import "firebase/compat/database"
 
 import { Container } from '@mui/system'
 import { makeStyles } from '@mui/styles'
-import { Typography, Link, Grid, IconButton, Tooltip } from '@mui/material'
+import { Typography, Link, Grid, IconButton, Tooltip, Box, Button } from '@mui/material'
 import DoneIcon from '@mui/icons-material/Done';
 import LinkIcon from '@mui/icons-material/Link';
 
@@ -95,6 +95,33 @@ const WaitingRoom:NextPage = () => {
         }
     }, [user, game, id, leaving]);
 
+    if (gameObj && gameObj.status !== "waiting" && !leaving) {
+        router.push(`/game/${id}`);
+    }
+
+    function leaveGame() {
+        setLeaving(true);
+        const updates = {
+            [`games/${id}/users/${userObj.id}`]: null,
+        };
+        firebase
+            .database()
+            .ref()
+            .update(updates)
+            .then(() => router.push("/"))
+            .catch((reason) => {
+                console.warn(`Failed to leave game (${reason})`);
+                setLeaving(false);
+            });
+    }
+
+    function startGame() {
+        firebase.database().ref(`games/${id}`).update({
+            status: "ingame",
+            startedAt: firebase.database.ServerValue.TIMESTAMP,
+        });
+    }
+
     return (
         <Container>
             <Navbar/>
@@ -135,6 +162,39 @@ const WaitingRoom:NextPage = () => {
                             </div>
                         </Grid>
                     </Grid>
+                    <Box marginTop={2}>
+                        {userObj && gameObj && userObj.id === gameObj.host ? (
+                        <Tooltip
+                            arrow
+                            title="Make sure everyone is in the waiting room! Additional players won't be able to join after the game has started."
+                        >
+                            <Button
+                            size="large"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={startGame}
+                            >
+                            Start game
+                            </Button>
+                        </Tooltip>
+                        ) : (
+                        <Tooltip
+                            arrow
+                            title="Currently waiting for the host to start the game. You can leave by pressing this button."
+                        >
+                            <Button
+                            size="large"
+                            variant="outlined"
+                            fullWidth
+                            disabled={leaving}
+                            onClick={leaveGame}
+                            >
+                            Leave game
+                            </Button>
+                        </Tooltip>
+                        )}
+                    </Box>
                 </Container>
             ) : (
                 <Container>
