@@ -92,7 +92,10 @@ const GameRoom:NextPage = () => {
                                             </Tooltip>
                                         </Box>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item container xs={3} direction="column">
+                                        <Typography variant="h6" align="center">
+                                            Structures
+                                        </Typography>
                                         <Tooltip                             
                                         arrow
                                         title="reversal conversion price"
