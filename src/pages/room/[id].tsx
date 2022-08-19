@@ -6,7 +6,8 @@ import "firebase/compat/database"
 
 import { Container } from '@mui/system'
 import { makeStyles } from '@mui/styles'
-import { Typography, Link, Grid, IconButton, Tooltip, Box, Button } from '@mui/material'
+import { Typography, Link, Grid, IconButton, 
+    Tooltip, Box, Button, Paper } from '@mui/material'
 import DoneIcon from '@mui/icons-material/Done';
 import LinkIcon from '@mui/icons-material/Link';
 
@@ -59,6 +60,7 @@ const WaitingRoom:NextPage = () => {
     const { id } = router.query
     const [game, _] = useFirebaseRef(`games/${id}`, false);
     const gameObj = game as unknown as GameObject;
+    // console.log("Game: ", game);
 
     const classes = useStyles();
 
@@ -73,25 +75,27 @@ const WaitingRoom:NextPage = () => {
     const [leaving, setLeaving] = useState(false);
 
     useEffect(() => {
+        // console.log("Use effect running");
         if (
           !leaving &&
           game &&
           gameObj.status === "waiting" &&
           (!gameObj.users || (userObj && !(userObj.id in gameObj.users)))
         ) {
-          const updates = {
-            [`games/${id}/users/${userObj.id}`]:
-              firebase.database.ServerValue.TIMESTAMP,
-            // [`userGames/${user.id}/${id}`]: game.createdAt,
-          };
-          firebase
-            .database()
-            .ref()
-            .update(updates)
-            .then(() => firebase.analytics().logEvent("join_game", { id }))
-            .catch((reason) => {
-              console.warn(`Failed to join game (${reason})`);
-            });
+            // console.log("UseEffect updating db");
+            const updates = {
+                [`games/${id}/users/${userObj.id}`]:
+                firebase.database.ServerValue.TIMESTAMP,
+                // [`userGames/${user.id}/${id}`]: game.createdAt,
+            };
+            firebase
+                .database()
+                .ref()
+                .update(updates)
+                .then(() => firebase.analytics().logEvent("join_game", { id }))
+                .catch((reason) => {
+                console.warn(`Failed to join game (${reason})`);
+                });
         }
     }, [user, game, id, leaving]);
 
@@ -125,76 +129,80 @@ const WaitingRoom:NextPage = () => {
     return (
         <Container>
             <Navbar/>
-            {game ? (
+            {gameObj ? (
                 <Container>
                     <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
                         Waiting Room
                     </Typography>
-                    <Typography variant="h6" align="center" style={{ marginTop: 0 }}>
+                    <Typography variant="h6" align="center" style={{ marginTop: 0, paddingBottom: 20 }}>
                         {id}
                     </Typography>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={6}>
-                            <Subheading>Players</Subheading>
-                            <RoomUserList game={game} gameId={id}/>
+                    <Paper style={{ padding: 16 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={6}>
+                                <div className={classes.subpanel}>
+                                    <Subheading>Players</Subheading>
+                                    <RoomUserList game={game} gameId={id}/>
+                                </div>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <div className={classes.subpanel}>
+                                    <Subheading>Inviting Friends</Subheading>
+                                    <Typography variant="body1">
+                                    To invite someone to play, share this URL:
+                                    <span className={classes.shareLink}>
+                                        <SimpleInput
+                                        readOnly
+                                        value={link}
+                                        onFocus={(event) => event.target.select()}
+                                        />
+                                        <Tooltip
+                                        placement="top"
+                                        title={copiedLink ? "Link copied" : "Copy link"}
+                                        >
+                                        <IconButton onClick={handleCopy}>
+                                            {copiedLink ? <DoneIcon /> : <LinkIcon />}
+                                        </IconButton>
+                                        </Tooltip>
+                                    </span>
+                                    </Typography>
+                                </div>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <div className={classes.subpanel}>
-                                <Subheading>Inviting Friends</Subheading>
-                                <Typography variant="body1">
-                                To invite someone to play, share this URL:
-                                <span className={classes.shareLink}>
-                                    <SimpleInput
-                                    readOnly
-                                    value={link}
-                                    onFocus={(event) => event.target.select()}
-                                    />
-                                    <Tooltip
-                                    placement="top"
-                                    title={copiedLink ? "Link copied" : "Copy link"}
-                                    >
-                                    <IconButton onClick={handleCopy}>
-                                        {copiedLink ? <DoneIcon /> : <LinkIcon />}
-                                    </IconButton>
-                                    </Tooltip>
-                                </span>
-                                </Typography>
-                            </div>
-                        </Grid>
-                    </Grid>
-                    <Box marginTop={2}>
-                        {userObj && gameObj && userObj.id === gameObj.host ? (
-                        <Tooltip
-                            arrow
-                            title="Make sure everyone is in the waiting room! Additional players won't be able to join after the game has started."
-                        >
-                            <Button
-                            size="large"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            onClick={startGame}
+                        <Box marginTop={2}>
+                            {userObj && gameObj && userObj.id === gameObj.host ? (
+                            <Tooltip
+                                arrow
+                                title="Make sure everyone is in the waiting room! Additional players won't be able to join after the game has started."
                             >
-                            Start game
-                            </Button>
-                        </Tooltip>
-                        ) : (
-                        <Tooltip
-                            arrow
-                            title="Currently waiting for the host to start the game. You can leave by pressing this button."
-                        >
-                            <Button
-                            size="large"
-                            variant="outlined"
-                            fullWidth
-                            disabled={leaving}
-                            onClick={leaveGame}
+                                <Button
+                                size="large"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={startGame}
+                                >
+                                Start game
+                                </Button>
+                            </Tooltip>
+                            ) : (
+                            <Tooltip
+                                arrow
+                                title="Currently waiting for the host to start the game. You can leave by pressing this button."
                             >
-                            Leave game
-                            </Button>
-                        </Tooltip>
-                        )}
-                    </Box>
+                                <Button
+                                size="large"
+                                variant="outlined"
+                                fullWidth
+                                disabled={leaving}
+                                onClick={leaveGame}
+                                >
+                                Leave game
+                                </Button>
+                            </Tooltip>
+                            )}
+                        </Box>
+                    </Paper>
                 </Container>
             ) : (
                 <Container>
