@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
-import { Container } from '@mui/system'
+import { Box, Container } from '@mui/system'
 
 import Navbar from '../../components/Navbar'
-import { Grid, Paper, Typography, Link } from '@mui/material'
+import { Grid, Paper, Typography, Link, Button, Tooltip } from '@mui/material'
 import { makeStyles } from '@mui/styles';
 
 import { styled } from '@mui/material/styles';
@@ -54,19 +54,75 @@ const GameRoom:NextPage = () => {
                 <Grid container style={{ height: "85vh" }} alignItems="stretch" >
                         <Grid item xs={9}>
                             <Grid container direction="column" spacing={1}>
-                                <Grid item xs={10}>
-                                    {/* <Paper className={classes.paper}>
-                                        <Item>Hello</Item>
-                                    </Paper> */}
-                                    <Item>
-                                        Stock: 69.05 @ 69.25
-                                    </Item>
+                                <Grid item container xs={10}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h6" align="center">
+                                            Stock
+                                        </Typography>
+                                        <Box 
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        >
+                                            <Button
+                                                size="medium"
+                                                disabled={false}
+                                                onClick={() => {}}
+                                                style={{ color: "#f2687f" }}
+                                            >
+                                                62.31
+                                            </Button>
+                                            <Button
+                                                size="medium"
+                                                disabled={false}
+                                                onClick={() => {}}
+                                                style={{ color: "#17bd5f" }}
+                                            >
+                                                62.36
+                                            </Button>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Tooltip                             
+                                        arrow
+                                        title="reversal conversion price"
+                                        >
+                                            <Button>r/c = 0.12</Button>
+                                        </Tooltip>
+                                        <Tooltip                             
+                                        arrow
+                                        title="put & stock price"
+                                        >
+                                            <Button>60 P&S = 3.78</Button>
+                                        </Tooltip>
+                                        <Tooltip                             
+                                        arrow
+                                        title="buy/write price"
+                                        >
+                                            <Button>65 B/W = 4.89</Button>
+                                        </Tooltip>
+                                        <Tooltip                             
+                                        arrow
+                                        title="call vertical price"
+                                        >
+                                            <Button>65/70 CV = 1.13</Button>
+                                        </Tooltip>
+                                        <Tooltip                             
+                                        arrow
+                                        title="straddle price"
+                                        >
+                                            <Button>75 Str = 8.64</Button>
+                                        </Tooltip>
+                                        <Tooltip                             
+                                        arrow
+                                        title="put vertical price"
+                                        >
+                                            <Button>75/80 PV = 2.31</Button>
+                                        </Tooltip>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={2}>
-                                Stock: 69.05 @ 69.25
-                                    {/* <Paper>
-                                        Yo
-                                    </Paper> */}
+                                    
                                 </Grid>
                             </Grid>
                         </Grid>
