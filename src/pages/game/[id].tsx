@@ -56,7 +56,7 @@ const GameRoom:NextPage = () => {
                             <Grid container direction="column" spacing={1}>
                                 <Grid item container xs={10}>
                                     <Grid item xs={12}>
-                                        <Typography variant="h6" align="center">
+                                        <Typography variant="h5" align="center">
                                             Stock
                                         </Typography>
                                         <Box 
@@ -91,6 +91,12 @@ const GameRoom:NextPage = () => {
                                                 </Button>
                                             </Tooltip>
                                         </Box>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="h6" align="center">
+                                            Option Chain
+                                        </Typography>
+                                        TODO
                                     </Grid>
                                     <Grid item container xs={3} direction="column">
                                         <Typography variant="h6" align="center">
@@ -134,14 +140,16 @@ const GameRoom:NextPage = () => {
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    
-                                </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={3}>
                             <Paper className={classes.paper}>
-                                
+                                <Typography variant="h5" align="center">
+                                    Log
+                                </Typography>
+                                <Typography align="center">
+                                    Time Left: 5:00
+                                </Typography>
                             </Paper>
                         </Grid>
                 </Grid>
