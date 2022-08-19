@@ -24,8 +24,8 @@
                 },
                 "users": {
                     "$userId": {
-                    ".write": "auth != null && auth.uid == $userId && data.parent().parent().child('status').val() == 'waiting'",
-                    ".validate": "!newData.exists() || (newData.isNumber() && newData.val() == now)"
+                        ".write": "auth != null && auth.uid == $userId && data.parent().parent().child('status').val() == 'waiting'",
+                        ".validate": "!newData.exists() || (newData.isNumber() && newData.val() == now)"
                     }
                 }
             }

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import firebase from '../../firebase'
 import "firebase/compat/database"
 
@@ -16,6 +16,8 @@ import Navbar from '../../components/Navbar'
 import RoomUserList from '../../components/RoomUserList'
 
 import useFirebaseRef from '../../hooks/useFirebaseRef'
+import { UserContext } from '../../context'
+import { UserObject } from '../../components/User'
 
 const useStyles = makeStyles((theme: any) => ({
     subpanel: {
@@ -44,11 +46,24 @@ const useStyles = makeStyles((theme: any) => ({
     },
 }));
 
+interface GameObject {
+    createdAt: number,
+    host: string,
+    status: string,
+    users: any[]
+};
+
 const WaitingRoom:NextPage = () => {
 
     const router = useRouter()
     const { id } = router.query
-    const [game, gameLoading] = useFirebaseRef(`games/${id}`);
+    const [game, _] = useFirebaseRef(`games/${id}`, false);
+    const gameObj = game as unknown as GameObject;
+    // console.log("Game id: ", id);
+    // console.log("Gameeeee: ", game);
+    // console.log("Game obj: ", gameObj);
+    // console.log("Game type: ", typeof(game));
+    // console.log("Game obj type: ", typeof(gameObj));
 
     const classes = useStyles();
 
@@ -57,6 +72,36 @@ const WaitingRoom:NextPage = () => {
     function handleCopy() {
         navigator.clipboard.writeText(link).then(() => setCopiedLink(true));
     }
+
+    const user = useContext(UserContext);
+    const userObj = user as unknown as UserObject
+    const [leaving, setLeaving] = useState(false);
+
+    // console.log("User: ", user);
+    // console.log("User type: ", typeof(user));
+
+    useEffect(() => {
+        if (
+          !leaving &&
+          game &&
+          gameObj.status === "waiting" &&
+          (!gameObj.users || (userObj && !(userObj.id in gameObj.users)))
+        ) {
+          const updates = {
+            [`games/${id}/users/${userObj.id}`]:
+              firebase.database.ServerValue.TIMESTAMP,
+            // [`userGames/${user.id}/${id}`]: game.createdAt,
+          };
+          firebase
+            .database()
+            .ref()
+            .update(updates)
+            .then(() => firebase.analytics().logEvent("join_game", { id }))
+            .catch((reason) => {
+              console.warn(`Failed to join game (${reason})`);
+            });
+        }
+    }, [user, game, id, leaving]);
 
     return (
         <Container>
@@ -72,7 +117,7 @@ const WaitingRoom:NextPage = () => {
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={6}>
                             <Subheading>Players</Subheading>
-                            <RoomUserList/>
+                            <RoomUserList game={game} gameId={id}/>
                         </Grid>
                         <Grid item xs={6}>
                             <div className={classes.subpanel}>
@@ -105,7 +150,8 @@ const WaitingRoom:NextPage = () => {
                         Loading...
                     </Typography>
                     <Typography variant="h6" align="center" style={{ marginTop: 20 }}>
-                        If the page does not load for more than 5 seconds, this game does not exist.
+                        If the page does not load for more than 5 seconds, please try refreshing the page. 
+                        If the page still does not load, this game does not exist.
                         Visit the{" "}
                         <Link href="/">
                             homepage

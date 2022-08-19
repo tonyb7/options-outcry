@@ -11,11 +11,13 @@ function useFirebaseRef(path: string, once = false) {
     if (path) {
       const ref = firebase.database().ref(path);
       const update = (snapshot: any) => {
+        console.log("useFirebaseRef GOT VALUE");
         if (once) ref.off("value", update);
         setValue(snapshot.val());
         setLoading(false);
       };
       ref.on("value", update);
+      console.log("useFirebaseRef LISTENING FOR VALUE");
       return () => {
         ref.off("value", update);
       };
