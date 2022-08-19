@@ -18,7 +18,8 @@ import RoomUserList from '../../components/RoomUserList'
 
 import useFirebaseRef from '../../hooks/useFirebaseRef'
 import { UserContext } from '../../context'
-import { UserObject } from '../../components/User'
+import { UserObject, GameObject } from '../../interfaces'
+import NotFoundPage from '../../components/NotFoundPage'
 
 const useStyles = makeStyles((theme: any) => ({
     subpanel: {
@@ -46,13 +47,6 @@ const useStyles = makeStyles((theme: any) => ({
       justifyContent: "space-around",
     },
 }));
-
-interface GameObject {
-    createdAt: number,
-    host: string,
-    status: string,
-    users: any[]
-};
 
 const WaitingRoom:NextPage = () => {
 
@@ -126,100 +120,88 @@ const WaitingRoom:NextPage = () => {
         });
     }
 
+    if (!gameObj) {
+        console.log("NO GAME OBJ")
+        return <NotFoundPage/>;
+    }
+
     return (
         <Container>
             <Navbar/>
-            {gameObj ? (
-                <Container>
-                    <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
-                        Waiting Room
-                    </Typography>
-                    <Typography variant="h6" align="center" style={{ marginTop: 0, paddingBottom: 20 }}>
-                        {id}
-                    </Typography>
-                    <Paper style={{ padding: 16 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={12} md={6}>
-                                <div className={classes.subpanel}>
-                                    <Subheading>Players</Subheading>
-                                    <RoomUserList game={game} gameId={id}/>
-                                </div>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <div className={classes.subpanel}>
-                                    <Subheading>Inviting Friends</Subheading>
-                                    <Typography variant="body1">
-                                    To invite someone to play, share this URL:
-                                    <span className={classes.shareLink}>
-                                        <SimpleInput
-                                        readOnly
-                                        value={link}
-                                        onFocus={(event) => event.target.select()}
-                                        />
-                                        <Tooltip
-                                        placement="top"
-                                        title={copiedLink ? "Link copied" : "Copy link"}
-                                        >
-                                        <IconButton onClick={handleCopy}>
-                                            {copiedLink ? <DoneIcon /> : <LinkIcon />}
-                                        </IconButton>
-                                        </Tooltip>
-                                    </span>
-                                    </Typography>
-                                </div>
-                            </Grid>
+            <Container>
+                <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
+                    Waiting Room
+                </Typography>
+                <Typography variant="h6" align="center" style={{ marginTop: 0, paddingBottom: 20 }}>
+                    {id}
+                </Typography>
+                <Paper style={{ padding: 16 }}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={6}>
+                            <div className={classes.subpanel}>
+                                <Subheading>Players</Subheading>
+                                <RoomUserList game={game} gameId={id}/>
+                            </div>
                         </Grid>
-                        <Box marginTop={2}>
-                            {userObj && gameObj && userObj.id === gameObj.host ? (
-                            <Tooltip
-                                arrow
-                                title="Make sure everyone is in the waiting room! Additional players won't be able to join after the game has started."
+                        <Grid item xs={6}>
+                            <div className={classes.subpanel}>
+                                <Subheading>Inviting Friends</Subheading>
+                                <Typography variant="body1">
+                                To invite someone to play, share this URL:
+                                <span className={classes.shareLink}>
+                                    <SimpleInput
+                                    readOnly
+                                    value={link}
+                                    onFocus={(event) => event.target.select()}
+                                    />
+                                    <Tooltip
+                                    placement="top"
+                                    title={copiedLink ? "Link copied" : "Copy link"}
+                                    >
+                                    <IconButton onClick={handleCopy}>
+                                        {copiedLink ? <DoneIcon /> : <LinkIcon />}
+                                    </IconButton>
+                                    </Tooltip>
+                                </span>
+                                </Typography>
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <Box marginTop={2}>
+                        {userObj && gameObj && userObj.id === gameObj.host ? (
+                        <Tooltip
+                            arrow
+                            title="Make sure everyone is in the waiting room! Additional players won't be able to join after the game has started."
+                        >
+                            <Button
+                            size="large"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={startGame}
                             >
-                                <Button
-                                size="large"
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                onClick={startGame}
-                                >
-                                Start game
-                                </Button>
-                            </Tooltip>
-                            ) : (
-                            <Tooltip
-                                arrow
-                                title="Currently waiting for the host to start the game. You can leave by pressing this button."
+                            Start game
+                            </Button>
+                        </Tooltip>
+                        ) : (
+                        <Tooltip
+                            arrow
+                            title="Currently waiting for the host to start the game. You can leave by pressing this button."
+                        >
+                            <Button
+                            size="large"
+                            variant="outlined"
+                            fullWidth
+                            disabled={leaving}
+                            onClick={leaveGame}
                             >
-                                <Button
-                                size="large"
-                                variant="outlined"
-                                fullWidth
-                                disabled={leaving}
-                                onClick={leaveGame}
-                                >
-                                Leave game
-                                </Button>
-                            </Tooltip>
-                            )}
-                        </Box>
-                    </Paper>
-                </Container>
-            ) : (
-                <Container>
-                    <Typography variant="h4" align="center" style={{ marginTop: 90 }}>
-                        Loading...
-                    </Typography>
-                    <Typography variant="h6" align="center" style={{ marginTop: 20 }}>
-                        If the page does not load for more than 5 seconds, please try refreshing the page. 
-                        If the page still does not load, this game does not exist.
-                        Visit the{" "}
-                        <Link href="/">
-                            homepage
-                        </Link>
-                        {" "}to create a game.
-                    </Typography>
-                </Container>
-            )}
+                            Leave game
+                            </Button>
+                        </Tooltip>
+                        )}
+                    </Box>
+                </Paper>
+            </Container>
         </Container>
     );
 }

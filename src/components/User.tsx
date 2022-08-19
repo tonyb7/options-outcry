@@ -1,13 +1,9 @@
 import useFirebaseRef from "../hooks/useFirebaseRef"
+import { UserObject } from "../interfaces"
 
 interface UserParams {
     id: string
 };
-
-export interface UserObject {
-    id: string,
-    name: string,
-}
 
 const User = ({ id } : UserParams) => {
 
