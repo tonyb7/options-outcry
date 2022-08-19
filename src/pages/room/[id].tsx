@@ -59,11 +59,6 @@ const WaitingRoom:NextPage = () => {
     const { id } = router.query
     const [game, _] = useFirebaseRef(`games/${id}`, false);
     const gameObj = game as unknown as GameObject;
-    // console.log("Game id: ", id);
-    // console.log("Gameeeee: ", game);
-    // console.log("Game obj: ", gameObj);
-    // console.log("Game type: ", typeof(game));
-    // console.log("Game obj type: ", typeof(gameObj));
 
     const classes = useStyles();
 
@@ -76,9 +71,6 @@ const WaitingRoom:NextPage = () => {
     const user = useContext(UserContext);
     const userObj = user as unknown as UserObject
     const [leaving, setLeaving] = useState(false);
-
-    // console.log("User: ", user);
-    // console.log("User type: ", typeof(user));
 
     useEffect(() => {
         if (
