@@ -4,8 +4,10 @@ import { useRouter } from 'next/router'
 import { Box, Container } from '@mui/system'
 
 import Navbar from '../../components/Navbar'
-import { Grid, Paper, Typography, Link, Button, Tooltip } from '@mui/material'
+import { Grid, Paper, Typography, Link, Button, Tooltip, TextField } from '@mui/material'
 import { makeStyles } from '@mui/styles';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 import { styled } from '@mui/material/styles';
 
@@ -96,7 +98,62 @@ const GameRoom:NextPage = () => {
                                         <Typography variant="h6" align="center">
                                             Option Chain
                                         </Typography>
-                                        TODO
+                                        <Grid container paddingTop={2} paddingLeft={12} paddingRight={12}>
+                                            <Grid container style={{ borderBottom: 'solid' }}>
+                                                <Grid container xs={5}>
+                                                    <Typography align="center" style={{ margin: 'auto' }}>
+                                                        Calls
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid container xs={2}>
+                                                    <Typography align="center" style={{ margin: 'auto' }}>
+                                                        K
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid container xs={5}>
+                                                    <Typography align="center" style={{ margin: 'auto' }}>
+                                                        Puts
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
+                                                <Grid container xs={5}>
+                                                    <Box 
+                                                    display="flex"
+                                                    justifyContent="center"
+                                                    alignItems="center"
+                                                    style={{ margin: 'auto' }}
+                                                    >
+                                                        <Tooltip arrow title="Click to sell option">
+                                                            <Button>3.89</Button>
+                                                        </Tooltip>
+                                                        <Tooltip arrow title="Click to buy option">
+                                                            <Button>3.90</Button>
+                                                        </Tooltip>
+                                                    </Box>
+                                                    <Box 
+                                                    display="flex"
+                                                    justifyContent="center"
+                                                    alignItems="center"
+                                                    style={{ margin: 'auto' }}
+                                                    >
+                                                        <Tooltip arrow title="Submit bid"><CheckIcon/></Tooltip>
+                                                        <Tooltip arrow title="Enter bid">
+                                                            <TextField size="small" style={{ padding: 5 }}></TextField>
+                                                        </Tooltip>
+                                                        <Tooltip arrow title="Enter offer">
+                                                        <TextField size="small" style={{ padding: 5 }}></TextField>
+                                                        </Tooltip>
+                                                        <Tooltip arrow title="Cancel offer"><CancelIcon/></Tooltip>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid container xs={2}>
+                                                    <span style={{ margin: 'auto' }}>60</span>
+                                                </Grid>
+                                                <Grid container xs={5}>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                     <Grid item container xs={3} direction="column">
                                         <Typography variant="h6" align="center">
