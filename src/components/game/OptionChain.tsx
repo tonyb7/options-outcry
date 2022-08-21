@@ -9,7 +9,7 @@ const OptionChain = () => {
             <Typography variant="h6" align="center">
                 Option Chain
             </Typography>
-            <Grid container paddingTop={2} paddingLeft={12} paddingRight={12}>
+            <Grid container paddingTop={2} paddingLeft={2} paddingRight={2}>
                 <Grid container style={{ borderBottom: 'solid' }}>
                     <Grid container xs={5}>
                         <Typography align="center" style={{ margin: 'auto' }}>

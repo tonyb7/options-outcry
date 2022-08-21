@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
-import { Box, Container } from '@mui/system'
+import { Container } from '@mui/system'
 
 import Navbar from '../../components/Navbar'
-import { Grid, Paper, Typography, Link, Button, Tooltip, TextField } from '@mui/material'
+import { Grid, Paper } from '@mui/material'
 import { makeStyles } from '@mui/styles';
 
 import { styled } from '@mui/material/styles';
@@ -16,6 +16,7 @@ import NotFoundPage from '../../components/NotFoundPage'
 import StockQuote from '../../components/game/StockQuote'
 import StructureQuotes from '../../components/game/StructureQuotes'
 import OptionChain from '../../components/game/OptionChain'
+import GameLog from '../../components/game/GameLog'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -73,12 +74,7 @@ const GameRoom:NextPage = () => {
                         </Grid>
                         <Grid item xs={3}>
                             <Paper className={classes.paper}>
-                                <Typography variant="h5" align="center">
-                                    Log
-                                </Typography>
-                                <Typography align="center">
-                                    Time Left: 5:00
-                                </Typography>
+                                <GameLog/>
                             </Paper>
                         </Grid>
                 </Grid>
