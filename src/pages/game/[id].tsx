@@ -53,8 +53,8 @@ const GameRoom:NextPage = () => {
     return (
         <Container>
             <Navbar/>
-            <div style={{ marginTop: 75 }}></div>
-            <Paper>
+            <div style={{ marginTop: 65 }}></div>
+            <Paper style={{ padding: 20 }}>
                 <Grid container style={{ height: "85vh" }} alignItems="stretch" >
                         <Grid item xs={9}>
                             <Grid container direction="column" spacing={1}>
