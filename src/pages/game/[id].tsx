@@ -63,10 +63,10 @@ const GameRoom:NextPage = () => {
                                     <Grid item xs={12}>
                                         <StockQuote/>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={8}>
                                         <OptionChain/>
                                     </Grid>
-                                    <Grid item container xs={3} direction="column">
+                                    <Grid item container xs={4} direction="column">
                                         <StructureQuotes/>
                                     </Grid>
                                 </Grid>

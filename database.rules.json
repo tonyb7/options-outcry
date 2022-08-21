@@ -1,13 +1,13 @@
 {
     "rules": {
-        "read": "auth != null",
+        ".read": "auth != null",
         "users": {
             "$uid": {
                 ".read": "auth != null",
                 ".write": "auth != null",
                 ".validate": "newData.hasChildren(['name'])",
                 "name": {
-                  ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 25"
+                    ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 25"
                 }
             }
         },
@@ -43,6 +43,28 @@
                         "time": {
                             ".validate": "newData.isNumber() && newData.val() == now"
                         }
+                    }
+                }
+            }
+        },
+        "chats": {
+            "$chatId": {
+                ".read": "auth != null",
+                ".indexOn": ["time", "user"],
+                "$messageId": {
+                    ".write": "auth != null && ((!data.exists() && newData.exists()) || (data.exists() && root.child('users').child(auth.uid).child('admin').val() == true))",
+                    ".validate": "newData.hasChildren(['user', 'message', 'time'])",
+                    "user": {
+                        ".validate": "newData.isString() && newData.val() == auth.uid"
+                    },
+                    "message": {
+                        ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 250"
+                    },
+                    "time": {
+                        ".validate": "newData.isNumber() && newData.val() == now"
+                    },
+                    "$other": {
+                        ".validate": false
                     }
                 }
             }
