@@ -33,6 +33,100 @@
         "gameData": {
             "$gameId": {
                 ".read": "auth != null",
+                "initialState": {
+                    "lowestStrike": {
+                        ".validate": "newData.isNumber() && newData.val() >= 20 && newData.val() <= 90"
+                    },
+                    "stockPrice": {
+                        ".validate": "newData.isNumber() && newData.val() >= 20 && newData.val() <= 110"
+                    },
+                    "spread": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.25"
+                    },
+                    "riskFreeRate": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 0.05"
+                    },
+                    "rc": {
+                        ".validate": "newData.isNumber()"
+                    },
+                    "lVol": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 0.40"
+                    },
+                    "tteDays": {
+                        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100"
+                    },
+                    "skew": {
+                        ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'none')"
+                    }
+                },
+                "structures": {
+                    "putAndStock": {
+                        "strike": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "price": {
+                            ".validate": "newData.isNumber()"
+                        }
+                    },
+                    "buyWrite": {
+                        "strike": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "price": {
+                            ".validate": "newData.isNumber()"
+                        }
+                    },
+                    "straddle": {
+                        "strike": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "price": {
+                            ".validate": "newData.isNumber()"
+                        }
+                    },
+                    "callVertical": {
+                        "lowerStrike": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "verticalWidth": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "price": {
+                            ".validate": "newData.isNumber()"
+                        }
+                    },
+                    "putVertical": {
+                        "lowerStrike": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "verticalWidth": {
+                            ".validate": "newData.isNumber()"
+                        },
+                        "price": {
+                            ".validate": "newData.isNumber()"
+                        }
+                    }
+                },
+                "optionFairs": {
+                    "$strike": {
+                        "call": {
+                            "bid": {
+                                ".validate": "newData.isNumber()"
+                            },
+                            "ask": {
+                                ".validate": "newData.isNumber()"
+                            }
+                        },
+                        "put": {
+                            "bid": {
+                                ".validate": "newData.isNumber()"
+                            },
+                            "ask": {
+                                ".validate": "newData.isNumber()"
+                            }
+                        }
+                    }
+                },
                 "events": {
                     "$eventId": {
                         ".write": "!data.exists() && newData.exists() && auth != null && root.child('games/' + $gameId + '/users/' + auth.uid).exists()",
@@ -48,7 +142,7 @@
             }
         },
         "chats": {
-            "$chatId": {
+            "$gameId": {
                 ".read": "auth != null",
                 ".indexOn": ["time", "user"],
                 "$messageId": {
