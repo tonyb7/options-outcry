@@ -9,13 +9,13 @@ const OptionQuoteRow = (props: any) => {
     return (
         <>
             <Grid container xs={5}>
-                <OptionQuote/>
+                <OptionQuote bidString="---" askString="---"/>
             </Grid>
             <Grid container xs={2}>
                 <span style={{ margin: 'auto' }}>{props.K}</span>
             </Grid>
             <Grid container xs={5}>
-                <OptionQuote/>
+                <OptionQuote bidString="---" askString="---"/>
             </Grid>
         </>
     );

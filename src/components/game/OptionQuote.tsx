@@ -5,8 +5,10 @@ import TextField from "@mui/material/TextField";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+import { OptionQuoteProps } from "../../interfaces";
 
-const OptionQuote = () => {
+const OptionQuote = (props: OptionQuoteProps) => {
+
     return (
         <>
             <Box 
@@ -16,10 +18,10 @@ const OptionQuote = () => {
             style={{ margin: 'auto' }}
             >
                 <Tooltip arrow title="Click to sell option">
-                    <Button>3.89</Button>
+                    <Button>{props.bidString}</Button>
                 </Tooltip>
                 <Tooltip arrow title="Click to buy option">
-                    <Button>3.90</Button>
+                    <Button>{props.bidString}</Button>
                 </Tooltip>
             </Box>
             <Box 

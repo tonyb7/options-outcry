@@ -10,3 +10,8 @@ export interface GameObject {
     status: string,
     users: any[]
 };
+
+export interface OptionQuoteProps {
+    bidString: string,
+    askString: string
+}
