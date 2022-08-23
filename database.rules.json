@@ -44,7 +44,10 @@
                         ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.25"
                     },
                     "riskFreeRate": {
-                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 0.05"
+                        ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.05"
+                    },
+                    "tteDays": {
+                        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100"
                     },
                     "rc": {
                         ".validate": "newData.isNumber()"
@@ -52,11 +55,28 @@
                     "lVol": {
                         ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 0.40"
                     },
-                    "tteDays": {
-                        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100"
-                    },
                     "skew": {
                         ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'none')"
+                    }
+                },
+                "optionFairs": {
+                    "$strike": {
+                        "call": {
+                            "bid": {
+                                ".validate": "newData.isNumber()"
+                            },
+                            "ask": {
+                                ".validate": "newData.isNumber()"
+                            }
+                        },
+                        "put": {
+                            "bid": {
+                                ".validate": "newData.isNumber()"
+                            },
+                            "ask": {
+                                ".validate": "newData.isNumber()"
+                            }
+                        }
                     }
                 },
                 "structures": {
@@ -104,26 +124,6 @@
                         },
                         "price": {
                             ".validate": "newData.isNumber()"
-                        }
-                    }
-                },
-                "optionFairs": {
-                    "$strike": {
-                        "call": {
-                            "bid": {
-                                ".validate": "newData.isNumber()"
-                            },
-                            "ask": {
-                                ".validate": "newData.isNumber()"
-                            }
-                        },
-                        "put": {
-                            "bid": {
-                                ".validate": "newData.isNumber()"
-                            },
-                            "ask": {
-                                ".validate": "newData.isNumber()"
-                            }
                         }
                     }
                 },
