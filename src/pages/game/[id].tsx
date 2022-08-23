@@ -39,9 +39,14 @@ const GameRoom:NextPage = () => {
     const classes = useStyles();
     const router = useRouter();
     const { id } = router.query;
-    const [game, _] = useFirebaseRef(`games/${id}`, true);
+
+    const [game, gameLoading] = useFirebaseRef(`games/${id}`, true);
     const gameObj = game as unknown as GameObject;
     console.log("Gameobj:", gameObj);
+
+    const [gameData, gameDataLoading] = useFirebaseRef(`gameData/${id}`, true);
+    const gameDataObj = gameData as any;
+    console.log("GameData: ", gameDataObj, gameDataObj?.initialState.atmVol);
 
     if (gameObj && gameObj.status === "waiting") {
         router.push(`/room/${id}`);
