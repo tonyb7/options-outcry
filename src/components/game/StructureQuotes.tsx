@@ -58,6 +58,7 @@ const StructureQuotes = (props: any) => {
                  <Tooltip                             
                  arrow
                  title={structure.tooltip}
+                 key={structure.tooltip}
                  >
                      <Button>{structure.label}</Button>
                  </Tooltip>

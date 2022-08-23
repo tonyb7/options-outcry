@@ -10,6 +10,9 @@ const StockQuote = (props: any) => {
     const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
     const gameDataObj = gameData as any;
 
+    let bid = gameDataObj?.initialState.stockPrice - (gameDataObj?.initialState.spread / 2);
+    let ask = gameDataObj?.initialState.stockPrice + (gameDataObj?.initialState.spread / 2);
+
     return (
         <>
             <Typography variant="h5" align="center">
@@ -30,7 +33,7 @@ const StockQuote = (props: any) => {
                         onClick={() => {}}
                         style={{ color: "#f2687f" }}
                     >
-                        {gameDataObj?.initialState.stockPrice.toFixed(2)}
+                        {bid.toFixed(2)}
                     </Button>
                 </Tooltip>
                 <Tooltip                             
@@ -43,7 +46,7 @@ const StockQuote = (props: any) => {
                         onClick={() => {}}
                         style={{ color: "#17bd5f" }}
                     >
-                        {(gameDataObj?.initialState.stockPrice + gameDataObj?.initialState.spread).toFixed(2)}
+                        {ask.toFixed(2)}
                     </Button>
                 </Tooltip>
             </Box>

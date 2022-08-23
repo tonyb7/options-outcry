@@ -17,17 +17,17 @@ const OptionChain = (props: any) => {
             </Typography>
             <Grid container paddingTop={2} paddingLeft={2} paddingRight={2}>
                 <Grid container style={{ borderBottom: 'solid' }}>
-                    <Grid container xs={5}>
+                    <Grid container item xs={5}>
                         <Typography align="center" style={{ margin: 'auto' }}>
                             Calls
                         </Typography>
                     </Grid>
-                    <Grid container xs={2}>
+                    <Grid container item xs={2}>
                         <Typography align="center" style={{ margin: 'auto' }}>
                             K
                         </Typography>
                     </Grid>
-                    <Grid container xs={5}>
+                    <Grid container item xs={5}>
                         <Typography align="center" style={{ margin: 'auto' }}>
                             Puts
                         </Typography>

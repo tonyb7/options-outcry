@@ -25,9 +25,10 @@ export function generateInitialState(): InitialState {
     let highestStrike = strikes[strikes.length - 1];
     let stockPrice = randNum(lowestStrike + 0.01, highestStrike);
     stockPrice = Math.round(stockPrice * 100) / 100 // round to 2 decimal places
-    let spread = (Math.floor(Math.random() * 25) + 1) / 100; // cent value in [0.01, 0.25]
-    let riskFreeRate = (Math.floor(Math.random() * 5) + 1) / 100; // [0.01, 0.05]
-    let tteDays = Math.floor(Math.random() * 100) + 50; // [50, 149]
+    stockPrice += 0.005 // stockPrice is price at middle of spread
+    let spread = ((Math.floor(Math.random() * 5) * 5) + 5) / 100; // multiple of 0.05 in [0.05, 0.25]
+    let riskFreeRate = (Math.floor(Math.random() * 3) + 1) / 100; // [0.01, 0.03]
+    let tteDays = Math.floor(Math.random() * 75) + 25; // [25, 99]
     let rc = stockPrice * Math.pow(Math.E, riskFreeRate * (tteDays / 252)) - stockPrice;
     rc = Math.round(rc * 100) / 100;
     let atmVol = (Math.floor(Math.random() * 36) + 5) / 100; // [0.05, 0.40]
@@ -58,14 +59,12 @@ function impliedVolAtK(k: number, s: number, atmVol: number, skew: string): numb
     return atmVol; // TODO
 }
 
-export function generateOptionFairs(initialState: InitialState): OptionFairs {
+export function generateInitialStateOptionFairs(initialState: InitialState): OptionFairs {
 
     let calls: Array<number> = [];
     let puts: Array<number> = [];
 
-    let s_bid = initialState.stockPrice;
-    let s_ask = s_bid + initialState.spread;
-    let s_mid = (s_bid + s_ask) / 2;
+    let s_mid = initialState.stockPrice;
     let t = initialState.tteDays / 252;
     let r = initialState.riskFreeRate;
 

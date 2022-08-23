@@ -13,7 +13,7 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-import { generateInitialState, generateOptionFairs, generateStructures } from './game';
+import { generateInitialState, generateInitialStateOptionFairs, generateStructures } from './game';
 
 const MAX_GAME_ID_LENGTH = 64;
 // const MAX_UNFINISHED_GAMES_PER_HOUR = 4;
@@ -65,8 +65,8 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
     }
 
     let initialState = generateInitialState();
-    let optionFairs = generateOptionFairs(initialState);
-    let structures = generateStructures(initialState, optionFairs);
+    let initialStateOptionFairs = generateInitialStateOptionFairs(initialState);
+    let structures = generateStructures(initialState, initialStateOptionFairs);
 
     // After this point, the game has successfully been created.
     // We update the database asynchronously in:
@@ -75,7 +75,7 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
     updates.push(
         admin.database().ref(`gameData/${gameId}`).set({
             initialState: initialState,
-            optionFairs: optionFairs,
+            initialStateOptionFairs: initialStateOptionFairs,
             structures: structures,
         })
     );

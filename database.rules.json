@@ -42,13 +42,13 @@
                         ".validate": "newData.isNumber() && newData.val() >= 20 && newData.val() <= 110"
                     },
                     "spread": {
-                        ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.25"
+                        ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 0.25"
                     },
                     "riskFreeRate": {
-                        ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.05"
+                        ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.03"
                     },
                     "tteDays": {
-                        ".validate": "newData.isNumber() && newData.val() >= 50 && newData.val() <= 149"
+                        ".validate": "newData.isNumber() && newData.val() >= 25 && newData.val() <= 99"
                     },
                     "rc": {
                         ".validate": "newData.isNumber()"
@@ -60,7 +60,7 @@
                         ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'both')"
                     }
                 },
-                "optionFairs": {
+                "initialStateOptionFairs": {
                     "calls": {},
                     "puts": {}
                 },
