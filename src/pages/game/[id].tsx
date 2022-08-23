@@ -44,10 +44,6 @@ const GameRoom:NextPage = () => {
     const gameObj = game as unknown as GameObject;
     console.log("Gameobj:", gameObj);
 
-    const [gameData, gameDataLoading] = useFirebaseRef(`gameData/${id}`, true);
-    const gameDataObj = gameData as any;
-    console.log("GameData: ", gameDataObj, gameDataObj?.initialState.atmVol);
-
     if (gameObj && gameObj.status === "waiting") {
         router.push(`/room/${id}`);
     }
@@ -66,13 +62,13 @@ const GameRoom:NextPage = () => {
                             <Grid container direction="column" spacing={1}>
                                 <Grid item container xs={10}>
                                     <Grid item xs={12}>
-                                        <StockQuote/>
+                                        <StockQuote gameId={id}/>
                                     </Grid>
                                     <Grid item xs={8}>
-                                        <OptionChain/>
+                                        <OptionChain gameId={id}/>
                                     </Grid>
                                     <Grid item container xs={4} direction="column">
-                                        <StructureQuotes/>
+                                        <StructureQuotes gameId={id}/>
                                     </Grid>
                                 </Grid>
                             </Grid>

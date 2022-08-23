@@ -2,7 +2,46 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 
-const StructureQuotes = () => {
+import useFirebaseRef from "../../hooks/useFirebaseRef";
+
+const StructureQuotes = (props: any) => {
+
+    const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
+    const gameDataObj = gameData as any;
+
+    let structureList = [
+        {   
+            strike: gameDataObj?.structures.putAndStock.strike, 
+            label: gameDataObj?.structures.putAndStock.strike + " P&S = " + gameDataObj?.structures.putAndStock.price.toFixed(2),
+            tooltip: "put & stock price"
+        },
+        {   
+            strike: gameDataObj?.structures.buyWrite.strike, 
+            label: gameDataObj?.structures.buyWrite.strike + " B/W = " + gameDataObj?.structures.buyWrite.price.toFixed(2),
+            tooltip: "buy/write price"
+        },
+        {   
+            strike: gameDataObj?.structures.straddle.strike, 
+            label: gameDataObj?.structures.straddle.strike + " STR = " + gameDataObj?.structures.straddle.price.toFixed(2),
+            tooltip: "straddle price"
+        },
+        {   
+            strike: gameDataObj?.structures.callVertical.lowerStrike, 
+            label:  gameDataObj?.structures.callVertical.lowerStrike + "/" + 
+                    (gameDataObj?.structures.callVertical.lowerStrike + gameDataObj?.structures.callVertical.verticalWidth) + 
+                    " CV = " + gameDataObj?.structures.callVertical.price.toFixed(2),
+            tooltip: "call vertical price"
+        },
+        {   
+            strike: gameDataObj?.structures.putVertical.lowerStrike, 
+            label:  gameDataObj?.structures.putVertical.lowerStrike + "/" + 
+                    (gameDataObj?.structures.putVertical.lowerStrike + gameDataObj?.structures.putVertical.verticalWidth) + 
+                    " PV = " + gameDataObj?.structures.putVertical.price.toFixed(2),
+            tooltip: "put vertical price"
+        },
+    ];
+
+    structureList.sort((a, b) => (a.strike > b.strike) ? 1 : -1);
 
     return (
         <>
@@ -13,38 +52,16 @@ const StructureQuotes = () => {
             arrow
             title="reversal conversion price"
             >
-                <Button>r/c = 0.12</Button>
+                <Button>r/c = {gameDataObj?.initialState.rc}</Button>
             </Tooltip>
-            <Tooltip                             
-            arrow
-            title="put & stock price"
-            >
-                <Button>60 P&S = 3.78</Button>
-            </Tooltip>
-            <Tooltip                             
-            arrow
-            title="buy/write price"
-            >
-                <Button>65 B/W = 4.89</Button>
-            </Tooltip>
-            <Tooltip                             
-            arrow
-            title="call vertical price"
-            >
-                <Button>65/70 CV = 1.13</Button>
-            </Tooltip>
-            <Tooltip                             
-            arrow
-            title="straddle price"
-            >
-                <Button>75 Str = 8.64</Button>
-            </Tooltip>
-            <Tooltip                             
-            arrow
-            title="put vertical price"
-            >
-                <Button>75/80 PV = 2.31</Button>
-            </Tooltip>
+            {structureList.map(structure => (
+                 <Tooltip                             
+                 arrow
+                 title={structure.tooltip}
+                 >
+                     <Button>{structure.label}</Button>
+                 </Tooltip>
+            ))}
         </>
     );
 }

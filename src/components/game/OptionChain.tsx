@@ -3,7 +3,13 @@ import Grid from "@mui/material/Grid";
 
 import OptionQuoteRow from "./OptionQuoteRow";
 
-const OptionChain = () => {
+import useFirebaseRef from "../../hooks/useFirebaseRef";
+
+const OptionChain = (props: any) => {
+
+    const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
+    const gameDataObj = gameData as any;
+
     return (
         <>
             <Typography variant="h6" align="center">
@@ -28,19 +34,19 @@ const OptionChain = () => {
                     </Grid>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={60}/>
+                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[0]}/>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={65}/>
+                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[1]}/>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={70}/>
+                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[2]}/>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={75}/>
+                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[3]}/>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={80}/>
+                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[4]}/>
                 </Grid>
             </Grid>
         </>
