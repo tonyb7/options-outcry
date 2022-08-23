@@ -2,9 +2,11 @@ import Grid from "@mui/material/Grid";
 
 import OptionQuote from "./OptionQuote";
 
-const OptionQuoteRow = (props: any) => {
+interface OptionQuoteRowProps {
+    K: number
+}
 
-    console.log("Props: ", props);
+const OptionQuoteRow = (props: OptionQuoteRowProps) => {
 
     return (
         <>
