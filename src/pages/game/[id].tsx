@@ -75,7 +75,7 @@ const GameRoom:NextPage = () => {
                         </Grid>
                         <Grid item xs={3}>
                             <Paper className={classes.paper}>
-                                <GameLog/>
+                                <GameLog gameId={id}/>
                             </Paper>
                         </Grid>
                 </Grid>

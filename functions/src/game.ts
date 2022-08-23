@@ -219,3 +219,20 @@ export function generateStructures(
     return structures;
 }
 
+
+export function generateOptionFairs(
+    initialState: InitialState, 
+    strcutures: StructuresState
+): OptionFairs {
+    
+    let calls: Array<number> = [];
+    let puts: Array<number> = [];
+
+    // TODO: compute option fairs from structures
+
+    let optionFairs: OptionFairs = {
+        calls: calls,
+        puts: puts
+    }
+    return optionFairs;
+}

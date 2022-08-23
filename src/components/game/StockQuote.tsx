@@ -25,7 +25,8 @@ const StockQuote = (props: any) => {
             >
                 <Tooltip                             
                 arrow
-                title="Click to sell"
+                // title="Click to sell"
+                title="Best Bid"
                 >
                     <Button
                         size="medium"
@@ -38,7 +39,8 @@ const StockQuote = (props: any) => {
                 </Tooltip>
                 <Tooltip                             
                 arrow
-                title="Click to buy"
+                // title="Click to buy"
+                title="Best Offer"
                 >
                     <Button
                         size="medium"
