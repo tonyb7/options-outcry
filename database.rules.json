@@ -37,6 +37,7 @@
                     "lowestStrike": {
                         ".validate": "newData.isNumber() && newData.val() >= 20 && newData.val() <= 90"
                     },
+                    "strikes": {},
                     "stockPrice": {
                         ".validate": "newData.isNumber() && newData.val() >= 20 && newData.val() <= 110"
                     },
@@ -47,37 +48,23 @@
                         ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.05"
                     },
                     "tteDays": {
-                        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100"
+                        ".validate": "newData.isNumber() && newData.val() >= 50 && newData.val() <= 149"
                     },
                     "rc": {
                         ".validate": "newData.isNumber()"
                     },
-                    "lVol": {
+                    "atmVol": {
                         ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 0.40"
                     },
                     "skew": {
-                        ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'none')"
+                        ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'both')"
                     }
                 },
                 "optionFairs": {
-                    "$strike": {
-                        "call": {
-                            "bid": {
-                                ".validate": "newData.isNumber()"
-                            },
-                            "ask": {
-                                ".validate": "newData.isNumber()"
-                            }
-                        },
-                        "put": {
-                            "bid": {
-                                ".validate": "newData.isNumber()"
-                            },
-                            "ask": {
-                                ".validate": "newData.isNumber()"
-                            }
-                        }
-                    }
+                    "callBids": {},
+                    "callAsks": {},
+                    "putBids": {},
+                    "putAsks": {}
                 },
                 "structures": {
                     "putAndStock": {

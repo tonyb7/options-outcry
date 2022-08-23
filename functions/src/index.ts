@@ -66,7 +66,7 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
 
     let initialState = generateInitialState();
     let optionFairs = generateOptionFairs(initialState);
-    let structures = generateStructures(optionFairs);
+    let structures = generateStructures(initialState, optionFairs);
 
     // After this point, the game has successfully been created.
     // We update the database asynchronously in:

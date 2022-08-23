@@ -15,6 +15,7 @@
     "@mui/material": "^5.10.0",
     "@mui/styles": "^5.9.3",
     "bad-words": "^3.0.4",
+    "black-scholes": "^1.1.0",
     "firebase": "^9.9.2",
     "next": "12.2.5",
     "project-name-generator": "^2.1.9",
