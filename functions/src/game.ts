@@ -1,3 +1,5 @@
+import { assert } from "console";
+
 var bs = require('black-scholes');
 
 interface InitialState {
@@ -48,10 +50,8 @@ export function generateInitialState(): InitialState {
 }
 
 interface OptionFairs {
-    callBids: Array<number>,
-    callAsks: Array<number>,
-    putBids: Array<number>,
-    putAsks: Array<number>
+    calls: Array<number>,
+    puts: Array<number>,
 }
 
 function impliedVolAtK(k: number, s: number, atmVol: number, skew: string): number {
@@ -60,10 +60,8 @@ function impliedVolAtK(k: number, s: number, atmVol: number, skew: string): numb
 
 export function generateOptionFairs(initialState: InitialState): OptionFairs {
 
-    let callBids: Array<number> = [];
-    let callAsks: Array<number> = [];
-    let putBids: Array<number> = [];
-    let putAsks: Array<number> = [];
+    let calls: Array<number> = [];
+    let puts: Array<number> = [];
 
     let s_bid = initialState.stockPrice;
     let s_ask = s_bid + initialState.spread;
@@ -74,23 +72,55 @@ export function generateOptionFairs(initialState: InitialState): OptionFairs {
     // blackScholes(s, k, t, v, r, callPut)
     initialState.strikes.forEach(k => {
         let v = impliedVolAtK(k, s_mid, initialState.atmVol, initialState.skew);
-        callBids.push(bs.blackScholes(s_bid, k, t, v, r, "call"));
-        callAsks.push(bs.blackScholes(s_ask, k, t, v, r, "call"));
-        putBids.push(bs.blackScholes(s_ask, k, t, v, r, "put"));
-        putAsks.push(bs.blackScholes(s_bid, k, t, v, r, "put"));
+        calls.push(bs.blackScholes(s_mid, k, t, v, r, "call"));
+        puts.push(bs.blackScholes(s_mid, k, t, v, r, "put"));
     });
 
     let optionFairs: OptionFairs = {
-        callBids: callBids,
-        callAsks: callAsks,
-        putBids: putBids,
-        putAsks: putAsks
+        calls: calls,
+        puts: puts
     }
     return optionFairs;
 }
 
 interface StructuresState {
+    putAndStock: {
+        strike: number,
+        price: number,
+        price_alt: number,
+    },
+    buyWrite: {
+        strike: number,
+        price: number,
+        price_alt: number,
+    },
+    straddle: {
+        strike: number,
+        price: number,
+        price_alt: number,
+    },
+    callVertical: {
+        lowerStrike: number,
+        verticalWidth: number,
+        price: number,
+        price_alt: number,
+    },
+    putVertical: {
+        lowerStrike: number,
+        verticalWidth: number,
+        price: number,
+        price_alt: number,
+    }
+}
 
+function shuffleArray(array: Array<number>) : Array<number> {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
 }
 
 export function generateStructures(
@@ -98,9 +128,94 @@ export function generateStructures(
         optionFairs: OptionFairs
     ): StructuresState {
 
-    let structures: StructuresState = {
+    assert(initialState.strikes.length >= 5);
+    let highestStrike = initialState.strikes[initialState.strikes.length - 1];
+    let strikeOrder = shuffleArray(initialState.strikes.slice(0));
 
+    let structures: StructuresState = {
+        putAndStock: {
+            strike: strikeOrder[0],
+            price: 0,
+            price_alt: 0,
+        },
+        buyWrite: {
+            strike: strikeOrder[1],
+            price: 0,
+            price_alt: 0,
+        },
+        straddle: {
+            strike: strikeOrder[2],
+            price: 0,
+            price_alt: 0,
+        },
+        callVertical: {
+            lowerStrike: strikeOrder[3],
+            verticalWidth: 5,
+            price: 0,
+            price_alt: 0,
+        },
+        putVertical: {
+            lowerStrike: strikeOrder[4],
+            verticalWidth: 5,
+            price: 0,
+            price_alt: 0,
+        }
     }
+
+    if (structures.callVertical.lowerStrike === highestStrike) {
+        structures.callVertical.lowerStrike -= 5;
+    }
+    if (structures.putVertical.lowerStrike === highestStrike) {
+        structures.putVertical.lowerStrike -= 5;
+    }
+
+    let s_mid = initialState.stockPrice + (initialState.spread / 2);
+
+    // putAndStock = call - r/c = put + parity
+    let k = structures.putAndStock.strike;
+    let k_idx = initialState.strikes.indexOf(k);
+    structures.putAndStock.price = optionFairs.calls[k_idx] - initialState.rc;
+    structures.putAndStock.price_alt = optionFairs.puts[k_idx] + (s_mid - k);
+
+    // buyWrite = put + r/c = call - parity
+    k = structures.buyWrite.strike;
+    k_idx = initialState.strikes.indexOf(k);
+    structures.buyWrite.price = optionFairs.puts[k_idx] + initialState.rc;
+    structures.buyWrite.price_alt = optionFairs.calls[k_idx] - (s_mid - k);
+
+    // straddle = put + call
+    k = structures.straddle.strike;
+    k_idx = initialState.strikes.indexOf(k);
+    structures.straddle.price = optionFairs.calls[k_idx] + optionFairs.puts[k_idx];
+    structures.straddle.price_alt = 2 * optionFairs.calls[k_idx] - (s_mid - k) - initialState.rc;
+
+    // callVertical = lower leg call - higher leg call 
+    k = structures.callVertical.lowerStrike;
+    k_idx = initialState.strikes.indexOf(k);
+    let k2 = k + structures.callVertical.verticalWidth;
+    let k2_idx = initialState.strikes.indexOf(k2);
+    structures.callVertical.price = optionFairs.calls[k_idx] - optionFairs.calls[k2_idx];
+    structures.callVertical.price_alt = structures.callVertical.verticalWidth - (optionFairs.puts[k2_idx] - optionFairs.puts[k_idx]);
+
+    // putVertical = higher leg put - lower leg put
+    k = structures.putVertical.lowerStrike;
+    k_idx = initialState.strikes.indexOf(k);
+    k2 = k + structures.putVertical.verticalWidth;
+    k2_idx = initialState.strikes.indexOf(k2);
+    structures.putVertical.price = optionFairs.puts[k2_idx] - optionFairs.puts[k_idx];
+    structures.putVertical.price_alt = structures.putVertical.verticalWidth - (optionFairs.calls[k_idx] - optionFairs.calls[k2_idx]);
+
+    // Round prices to two decimal places
+    structures.putAndStock.price = Math.round(structures.putAndStock.price * 100) / 100;
+    structures.putAndStock.price_alt = Math.round(structures.putAndStock.price_alt * 100) / 100;
+    structures.buyWrite.price = Math.round(structures.buyWrite.price * 100) / 100;
+    structures.buyWrite.price_alt = Math.round(structures.buyWrite.price_alt * 100) / 100;
+    structures.straddle.price = Math.round(structures.straddle.price * 100) / 100;
+    structures.straddle.price_alt = Math.round(structures.straddle.price_alt * 100) / 100;
+    structures.callVertical.price = Math.round(structures.callVertical.price * 100) / 100;
+    structures.callVertical.price_alt = Math.round(structures.callVertical.price_alt * 100) / 100;
+    structures.putVertical.price = Math.round(structures.putVertical.price * 100) / 100;
+    structures.putVertical.price_alt = Math.round(structures.putVertical.price_alt * 100) / 100;
 
     return structures;
 }

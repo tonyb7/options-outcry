@@ -61,10 +61,8 @@
                     }
                 },
                 "optionFairs": {
-                    "callBids": {},
-                    "callAsks": {},
-                    "putBids": {},
-                    "putAsks": {}
+                    "calls": {},
+                    "puts": {}
                 },
                 "structures": {
                     "putAndStock": {
