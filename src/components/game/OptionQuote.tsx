@@ -5,7 +5,10 @@ import TextField from "@mui/material/TextField";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-import { OptionQuoteProps } from "../../interfaces";
+interface OptionQuoteProps {
+    bidString: string,
+    askString: string
+}
 
 const OptionQuote = (props: OptionQuoteProps) => {
 
