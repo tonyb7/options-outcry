@@ -6,44 +6,48 @@ import ListItem from "@mui/material/ListItem";
 import GameTimer from "./GameTimer";
 import SimpleInput from "../SimpleInput";
 
-import { useState } from "react";
-import useFirebaseRef from "../../hooks/useFirebaseRef";
+import { useState, useContext, useMemo } from "react";
+import useFirebaseQuery from "../../hooks/useFirebaseQuery.js";
+
+import Filter from "bad-words";
+
+import firebase from "../../firebase";
+import { UserContext } from "../../context";
+import User from "../User";
 
 const GameLog = (props: any) => {
 
+    const user: any = useContext(UserContext);
     const [input, setInput] = useState("");
+    const filter = new Filter();
 
-    const [chat, _] = useFirebaseRef(`chats/${props.gameId}`, true);
-    const chatObj = chat as any;
-
-    // const databasePath = gameId ? `chats/${gameId}` : "lobbyChat";
-    // const messagesQuery = useMemo(
-    //   () =>
-    //     firebase
-    //       .database()
-    //       .ref(databasePath)
-    //       .orderByChild("time")
-    //       .limitToLast(messageLimit),
-    //   [databasePath, messageLimit]
-    // );
-    // const messages = useFirebaseQuery(messagesQuery);
+    const databasePath = `chats/${props.gameId}`;
+    const messagesQuery = useMemo(
+      () =>
+        firebase
+          .database()
+          .ref(databasePath)
+          .orderByChild("time"),
+      [databasePath]
+    );
+    const messages = useFirebaseQuery(messagesQuery);
 
     function handleSubmit(event: any) {
-    //     event.preventDefault();
-    //     if (input) {
-    //       if (filter.isProfane(input)) {
-    //         alert(
-    //           "We detected that your message contains profane language. If you think this was a mistake, please let us know!"
-    //         );
-    //       } else {
-    //         firebase.database().ref(databasePath).push({
-    //           user: user.id,
-    //           message: input,
-    //           time: firebase.database.ServerValue.TIMESTAMP,
-    //         });
-    //         setInput("");
-    //       }
-    //     }
+        event.preventDefault();
+        if (input) {
+            if (filter.isProfane(input)) {
+                alert(
+                    "We detected that your message contains profane language."
+                );
+            } else {
+                firebase.database().ref(databasePath).push({
+                    user: user.id,
+                    message: input,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                });
+                setInput("");
+            }
+        }
     }
 
     return (
@@ -52,45 +56,24 @@ const GameLog = (props: any) => {
                 Log
             </Typography>
             <GameTimer/>
-            <Paper style={{ maxHeight: '70vh', overflow: 'auto', margin: 5 }}>
+            <Paper style={{ minHeight: '70vh', maxHeight: '70vh', overflow: 'auto', margin: 5 }}>
                 <List>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
-                    <ListItem>Hello</ListItem>
+                    {Object.entries(messages)
+                        .sort(([, a]: [any, any], [, b]: [any, any]) => a.time - b.time) 
+                        .map(([key, item]: [any, any]) => 
+                            item.user !== process.env.NEXT_PUBLIC_SERVER_USER_ID ? 
+                            (
+                                <ListItem key={key} style={{ fontSize: 12 }}>
+                                    <b><User id={item.user}/></b>: {item.message}
+                                </ListItem>
+                            ) : (
+                                <Paper>
+                                    <ListItem key={key} style={{ fontSize: 12 }}>
+                                        {item.message}
+                                    </ListItem>
+                                </Paper>
+                            )
+                    )}
                 </List>
             </Paper>
             <form onSubmit={handleSubmit} style={{ margin: 5 }}>
@@ -103,6 +86,15 @@ const GameLog = (props: any) => {
             </form>
         </>
     );
+}
+
+export function AddServerMessage(gameId: string, message: string): void {
+    const databasePath = `chats/${gameId}`;
+    firebase.database().ref(databasePath).push({
+        user: process.env.NEXT_PUBLIC_SERVER_USER_ID,
+        message: message,
+        time: firebase.database.ServerValue.TIMESTAMP,
+    });
 }
 
 export default GameLog;
