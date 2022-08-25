@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 
+// https://medium.com/courtly-intrepid/environmental-variables-in-next-js-with-dotenv-599c5bbfdf74
 const webpack = require('webpack')
 const { parsed: myEnv } = require('dotenv').config()
 

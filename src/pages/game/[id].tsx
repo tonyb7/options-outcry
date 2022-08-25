@@ -18,21 +18,12 @@ import StructureQuotes from '../../components/game/StructureQuotes'
 import OptionChain from '../../components/game/OptionChain'
 import GameLog from '../../components/game/GameLog'
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
 const useStyles = makeStyles({
     paper: {
       width: "100%",
       height: "100%"
     }
-});  
-
+});
 
 const GameRoom:NextPage = () => {
 

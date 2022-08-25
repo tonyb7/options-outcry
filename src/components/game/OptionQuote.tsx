@@ -24,7 +24,7 @@ const OptionQuote = (props: OptionQuoteProps) => {
                     <Button>{props.bidString}</Button>
                 </Tooltip>
                 <Tooltip arrow title="Click to buy option">
-                    <Button>{props.bidString}</Button>
+                    <Button>{props.askString}</Button>
                 </Tooltip>
             </Box>
             <Box 
