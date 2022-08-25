@@ -70,6 +70,16 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
     let structures = generateStructures(initialState, initialStateOptionFairs);
     let optionFairs = generateOptionFairs(initialState, structures);
 
+    // const usersRef = admin.database().ref(`games/${gameId}/users`);
+    // let users = {};
+    // const getUsers: Promise<any> = gameRef.once("value", snapshot => {
+    //     console.log("Received value in database!");
+    //     users = snapshot.val();
+    //     console.log("Recvd value: ", users);
+    // });
+    // await Promise.resolve(getUsers);
+    // console.log("Users: ", users);
+
     // After this point, the game has successfully been created.
     // We update the database asynchronously in:
     //   1. /gameData/:gameId
@@ -80,6 +90,7 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
             initialStateOptionFairs: initialStateOptionFairs,
             structures: structures,
             optionFairs: optionFairs,
+            markets: {"hello": "asdf"},
         })
     );
 

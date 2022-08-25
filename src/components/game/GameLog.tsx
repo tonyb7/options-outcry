@@ -67,7 +67,7 @@ const GameLog = (props: any) => {
                                     <b><User id={item.user}/></b>: {item.message}
                                 </ListItem>
                             ) : (
-                                <Paper>
+                                <Paper key={key}>
                                     <ListItem key={key} style={{ fontSize: 12 }}>
                                         {item.message}
                                     </ListItem>

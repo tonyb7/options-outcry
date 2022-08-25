@@ -86,9 +86,11 @@ const WaitingRoom:NextPage = () => {
                 .database()
                 .ref()
                 .update(updates)
-                .then(() => firebase.analytics().logEvent("join_game", { id }))
+                .then(() => {
+                    firebase.analytics().logEvent("join_game", { id });
+                })
                 .catch((reason) => {
-                console.warn(`Failed to join game (${reason})`);
+                    console.warn(`Failed to join game (${reason})`);
                 });
         }
     }, [user, game, id, leaving]);
@@ -118,6 +120,26 @@ const WaitingRoom:NextPage = () => {
             status: "ingame",
             startedAt: firebase.database.ServerValue.TIMESTAMP,
         });
+        
+        let initMarkets: { [userId: string]: any } = {};
+        const users = Object.keys(gameObj.users || {}).sort(
+            (a: any, b: any) => gameObj.users[a] - gameObj.users[b]
+        );
+        users.map(userId => {
+            initMarkets[userId] = 
+            {
+                callBids: [-1, -1, -1, -1, -1],
+                callAsks: [-1, -1, -1, -1, -1],
+                putBids: [-1, -1, -1, -1, -1],
+                putAsks: [-1, -1, -1, -1, -1],
+            }
+        });
+        firebase.database().ref(`/gameData/${id}/markets`)
+            .set(initMarkets)
+            .then(() => { })
+            .catch((reason) => {
+                console.warn(`Failed to initialize markets in gameData. (${reason})`);
+            });
     }
 
     if (!gameObj) {
