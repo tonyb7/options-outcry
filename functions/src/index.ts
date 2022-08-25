@@ -93,11 +93,8 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
 
 export function AddServerMessage(gameId: string, message: string): void {
     const databasePath = `chats/${gameId}`;
-    const NEXT_PUBLIC_SERVER_USER_ID = "SERVER"; // TODO how to not do this? Have it read from env variables?
-    console.log("SERVER_ID: ", process.env.NEXT_PUBLIC_SERVER_USER_ID); // this outputs undefined
-
     admin.database().ref(databasePath).push({
-        user: NEXT_PUBLIC_SERVER_USER_ID,
+        user: process.env.SERVER_USER_ID,
         message: message,
         time: admin.database.ServerValue.TIMESTAMP,
     });

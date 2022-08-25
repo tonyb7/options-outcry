@@ -61,7 +61,7 @@ const GameLog = (props: any) => {
                     {Object.entries(messages)
                         .sort(([, a]: [any, any], [, b]: [any, any]) => a.time - b.time) 
                         .map(([key, item]: [any, any]) => 
-                            item.user !== process.env.NEXT_PUBLIC_SERVER_USER_ID ? 
+                            item.user !== process.env.SERVER_USER_ID ? 
                             (
                                 <ListItem key={key} style={{ fontSize: 12 }}>
                                     <b><User id={item.user}/></b>: {item.message}
@@ -86,15 +86,6 @@ const GameLog = (props: any) => {
             </form>
         </>
     );
-}
-
-export function AddServerMessage(gameId: string, message: string): void {
-    const databasePath = `chats/${gameId}`;
-    firebase.database().ref(databasePath).push({
-        user: process.env.NEXT_PUBLIC_SERVER_USER_ID,
-        message: message,
-        time: firebase.database.ServerValue.TIMESTAMP,
-    });
 }
 
 export default GameLog;

@@ -59,7 +59,7 @@ const WaitingRoom:NextPage = () => {
     const classes = useStyles();
 
     const [copiedLink, setCopiedLink] = useState(false);
-    const link = process.env.NEXT_PUBLIC_HOST + "room/" + id;
+    const link = process.env.HOST + "room/" + id;
     function handleCopy() {
         navigator.clipboard.writeText(link).then(() => setCopiedLink(true));
     }
@@ -125,13 +125,20 @@ const WaitingRoom:NextPage = () => {
         const users = Object.keys(gameObj.users || {}).sort(
             (a: any, b: any) => gameObj.users[a] - gameObj.users[b]
         );
+        const initMarketArray = [
+            parseInt(process.env.NO_MARKET || ''),
+            parseInt(process.env.NO_MARKET || ''),
+            parseInt(process.env.NO_MARKET || ''),
+            parseInt(process.env.NO_MARKET || ''),
+            parseInt(process.env.NO_MARKET || '')
+        ];
         users.map(userId => {
             initMarkets[userId] = 
             {
-                callBids: [-1, -1, -1, -1, -1],
-                callAsks: [-1, -1, -1, -1, -1],
-                putBids: [-1, -1, -1, -1, -1],
-                putAsks: [-1, -1, -1, -1, -1],
+                callBids: initMarketArray,
+                callAsks: initMarketArray,
+                putBids: initMarketArray,
+                putAsks: initMarketArray,
             }
         });
         firebase.database().ref(`/gameData/${id}/markets`)
