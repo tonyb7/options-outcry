@@ -4,6 +4,13 @@
 - [firebase](https://firebase.google.com/)
 - [Material UI](https://mui.com/)
 
+## Environment Variable Setup
+Hard link `.env` and `functions/.env` since apparently GitHub cannot store hard links:
+```
+rm functions/.env
+ln .env functions/.env
+``` 
+
 ## Firebase Setup
 
 Create a firebase project and do the following:
