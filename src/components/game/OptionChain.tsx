@@ -14,7 +14,11 @@ export interface Markets {
     userPutMarkets: UserMarkets
 }
 
-const OptionChain = (props: any) => {
+interface OptionChainProps {
+    gameId: string
+}
+
+const OptionChain = (props: OptionChainProps) => {
 
     const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
     const gameDataObj = gameData as any;
@@ -70,19 +74,39 @@ const OptionChain = (props: any) => {
                     </Grid>
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[0]} market={markets[0]}/>
+                    <OptionQuoteRow 
+                        gameId={props.gameId} 
+                        K={gameDataObj?.initialState.strikes[0]} 
+                        market={markets[0]}
+                    />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[1]} market={markets[1]}/>
+                    <OptionQuoteRow 
+                        gameId={props.gameId} 
+                        K={gameDataObj?.initialState.strikes[1]} 
+                        market={markets[1]}
+                    />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[2]} market={markets[2]}/>
+                    <OptionQuoteRow 
+                        gameId={props.gameId} 
+                        K={gameDataObj?.initialState.strikes[2]} 
+                        market={markets[2]}
+                    />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[3]} market={markets[3]}/>
+                    <OptionQuoteRow 
+                        gameId={props.gameId} 
+                        K={gameDataObj?.initialState.strikes[3]} 
+                        market={markets[3]}
+                    />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
-                    <OptionQuoteRow K={gameDataObj?.initialState.strikes[4]} market={markets[4]}/>
+                    <OptionQuoteRow 
+                        gameId={props.gameId} 
+                        K={gameDataObj?.initialState.strikes[4]} 
+                        market={markets[4]}
+                    />
                 </Grid>
             </Grid>
         </>

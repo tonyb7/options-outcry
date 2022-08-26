@@ -30,6 +30,7 @@ const GameRoom:NextPage = () => {
     const classes = useStyles();
     const router = useRouter();
     const { id } = router.query;
+    const gameId: string = id as string;
 
     const [game, gameLoading] = useFirebaseRef(`games/${id}`, true);
     const gameObj = game as unknown as GameObject;
@@ -53,13 +54,13 @@ const GameRoom:NextPage = () => {
                             <Grid container direction="column" spacing={1}>
                                 <Grid item container xs={10}>
                                     <Grid item xs={12}>
-                                        <StockQuote gameId={id}/>
+                                        <StockQuote gameId={gameId}/>
                                     </Grid>
                                     <Grid item xs={8}>
-                                        <OptionChain gameId={id}/>
+                                        <OptionChain gameId={gameId}/>
                                     </Grid>
                                     <Grid item container xs={4} direction="column">
-                                        <StructureQuotes gameId={id}/>
+                                        <StructureQuotes gameId={gameId}/>
                                     </Grid>
                                 </Grid>
                             </Grid>

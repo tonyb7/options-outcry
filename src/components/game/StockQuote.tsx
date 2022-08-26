@@ -5,7 +5,11 @@ import Typography from "@mui/material/Typography";
 
 import useFirebaseRef from "../../hooks/useFirebaseRef";
 
-const StockQuote = (props: any) => {
+interface StockQuoteProps {
+    gameId: string
+}
+
+const StockQuote = (props: StockQuoteProps) => {
 
     const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
     const gameDataObj = gameData as any;

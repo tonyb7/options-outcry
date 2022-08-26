@@ -4,7 +4,11 @@ import Button from "@mui/material/Button";
 
 import useFirebaseRef from "../../hooks/useFirebaseRef";
 
-const StructureQuotes = (props: any) => {
+interface StructureQuotesProps {
+    gameId: string
+}
+
+const StructureQuotes = (props: StructureQuotesProps) => {
 
     const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
     const gameDataObj = gameData as any;
