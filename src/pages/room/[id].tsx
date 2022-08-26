@@ -132,13 +132,23 @@ const WaitingRoom:NextPage = () => {
             parseInt(process.env.NO_MARKET || ''),
             parseInt(process.env.NO_MARKET || '')
         ];
+        const initTimesArray = [
+            // Date.now() also works
+            firebase.database.ServerValue.TIMESTAMP,
+            firebase.database.ServerValue.TIMESTAMP,
+            firebase.database.ServerValue.TIMESTAMP,
+            firebase.database.ServerValue.TIMESTAMP,
+            firebase.database.ServerValue.TIMESTAMP
+        ];
         users.map(userId => {
             initMarkets[userId] = 
             {
                 callBids: initMarketArray,
                 callAsks: initMarketArray,
+                callMarketTimes: initTimesArray,
                 putBids: initMarketArray,
                 putAsks: initMarketArray,
+                putMarketTimes: initTimesArray
             }
         });
         firebase.database().ref(`/gameData/${id}/markets`)

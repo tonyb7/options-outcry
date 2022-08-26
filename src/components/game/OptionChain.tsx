@@ -6,7 +6,7 @@ import OptionQuoteRow from "./OptionQuoteRow";
 import useFirebaseRef from "../../hooks/useFirebaseRef";
 
 interface UserMarkets { 
-    [userId: string]: { bid: number, ask: number } 
+    [userId: string]: { bid: number, ask: number, time: number } 
 }
 export interface Markets {
     strike: number,
@@ -27,8 +27,16 @@ const OptionChain = (props: any) => {
 
         for (let userId in marketsObj) {
             let userMarkets = marketsObj[userId];
-            userCallMarkets[userId] = { bid: userMarkets.callBids[i], ask: userMarkets.callAsks[i] };
-            userPutMarkets[userId] = { bid: userMarkets.putBids[i], ask: userMarkets.putAsks[i] };
+            userCallMarkets[userId] = { 
+                bid: userMarkets.callBids[i], 
+                ask: userMarkets.callAsks[i], 
+                time: userMarkets.callMarketTimes[i] 
+            };
+            userPutMarkets[userId] = { 
+                bid: userMarkets.putBids[i], 
+                ask: userMarkets.putAsks[i], 
+                time: userMarkets.callMarketTimes[i] 
+            };
         }
     
         markets.push({
