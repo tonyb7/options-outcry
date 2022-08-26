@@ -16,4 +16,10 @@ const User = ({ id } : UserParams) => {
 
 }
 
+export function GetUserNameFromId(id: string): string {
+    const [user, _] = useFirebaseRef(`users/${id}`);
+    const userObj = user as unknown as UserObject
+    return userObj ? userObj.name : "...";
+}
+
 export default User 

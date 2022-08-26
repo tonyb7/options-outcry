@@ -5,12 +5,26 @@ import TextField from "@mui/material/TextField";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+import { GetUserNameFromId } from '../User';
+
 interface OptionQuoteProps {
     bidString: string,
-    askString: string
+    bidUserId: string,
+    askString: string,
+    askUserId: string
 }
 
 const OptionQuote = (props: OptionQuoteProps) => {
+
+    let bidId = "None";
+    if (props.bidUserId.length > 0) {
+        bidId = GetUserNameFromId(props.bidUserId);
+    }
+
+    let askId = "None";
+    if (props.askUserId.length > 0) {
+        askId = GetUserNameFromId(props.askUserId);
+    }
 
     return (
         <>
@@ -20,10 +34,10 @@ const OptionQuote = (props: OptionQuoteProps) => {
             alignItems="center"
             style={{ margin: 'auto' }}
             >
-                <Tooltip arrow title="Click to sell option">
+                <Tooltip arrow title={"Best Bid - " + bidId}>
                     <Button>{props.bidString}</Button>
                 </Tooltip>
-                <Tooltip arrow title="Click to buy option">
+                <Tooltip arrow title={"Best Ask - " + askId}>
                     <Button>{props.askString}</Button>
                 </Tooltip>
             </Box>
