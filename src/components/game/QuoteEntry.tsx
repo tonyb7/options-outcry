@@ -4,6 +4,9 @@ import TextField from "@mui/material/TextField";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 
 import { useState } from "react";
 
@@ -18,13 +21,23 @@ const QuoteEntry = (props: QuoteEntryProps) => {
     const [submitted, setSubmitted] = useState(false);
     const [bid, setBid] = useState("");
     const [ask, setAsk] = useState("");
+    const [warningOpen, setWarningOpen] = useState(false);
 
     const handleSubmitQuote = () => {
-        console.log("handle submit quote!");
+        console.log("handle submit quote! bid: ", bid, " ask: ", ask);
         if (bid.length === 0 || ask.length === 0) {
-            // TODO: notif why quote not submitted
+            setWarningOpen(true);
             return;
         }
+
+        let bidFloat = parseFloat(bid);
+        let askFloat = parseFloat(ask);
+        if (bidFloat.toString() != bid || askFloat.toString() != ask) {
+            setWarningOpen(true);
+            return;
+        }
+
+
         setSubmitted(true);
 
     }
@@ -39,6 +52,15 @@ const QuoteEntry = (props: QuoteEntryProps) => {
         }
     }
 
+    const handleBidChange = (event: any) => {
+        setBid(event.target.value);
+    }
+
+    const handleAskChange = (event: any) => {
+        setAsk(event.target.value);
+    }
+
+
     return (
         <Box 
         display="flex"
@@ -50,10 +72,22 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                     <>
                     <PointOfSaleIcon visibility="hidden"/>
                     <Tooltip arrow title="Your bid">
-                        <TextField size="small" style={{ padding: 5 }}></TextField>
+                        <TextField 
+                            disabled 
+                            size="small" 
+                            style={{ padding: 5 }}
+                            value={bid}
+                        >
+                        </TextField>
                     </Tooltip>
                     <Tooltip arrow title="Your offer">
-                        <TextField size="small" style={{ padding: 5 }}></TextField>
+                        <TextField 
+                            disabled 
+                            size="small" 
+                            style={{ padding: 5 }}
+                            value={ask}
+                        >
+                        </TextField>
                     </Tooltip>
                     <Tooltip arrow title="Cancel quote">
                         <CancelIcon onClick={handleCancelQuote}/>
@@ -61,12 +95,24 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                     </>
                 ) : (
                     <>
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        autoHideDuration={2500}
+                        open={warningOpen}
+                        onClose={()=> setWarningOpen(false)}
+                        key={'market-enter-error'}
+                    >
+                        <Alert severity="warning">
+                            Quotes must include both bid and ask! Quotes must be numerical.
+                        </Alert>
+                    </Snackbar>
                     <PointOfSaleIcon visibility="hidden"/>
                     <Tooltip arrow title="Enter bid">
                         <TextField 
                             size="small" style={{ padding: 5 }}
                             onKeyDown={handleInputEnter}
-                            onChange={(e) => setBid(e.target.value)}
+                            onChange={handleBidChange}
+                            value={bid}
                         >
                         </TextField>
                     </Tooltip>
@@ -74,7 +120,8 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                         <TextField 
                             size="small" style={{ padding: 5 }}
                             onKeyDown={handleInputEnter}
-                            onChange={(e) => setAsk(e.target.value)}
+                            onChange={handleAskChange}
+                            value={ask}
                         >
                         </TextField>
                     </Tooltip>
