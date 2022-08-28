@@ -87,6 +87,7 @@ export const createGame = functions.https.onCall(async (data: any, context: any)
     await Promise.all(updates);
 
     AddServerMessage(gameId, "Welcome to Options Open Outcry!");
+    AddServerMessage(gameId, "Make markets and have the host click \"Calculate PnL\" when you are ready!");
 
     return snapshot.val();
 });
