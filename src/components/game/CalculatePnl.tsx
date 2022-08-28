@@ -40,6 +40,8 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         style={{ width: '80%', margin: 'auto', textAlign: 'center' }}
         title={ "Compute PnL of each player supposing that " + 
                 "the inside market of each option was executed. " + 
+                "PnL is calculated against approximate option fair values " + 
+                "based on the price of underlying and price of structures. " + 
                 "Can only be clicked by the host." }
         >
             <span>
