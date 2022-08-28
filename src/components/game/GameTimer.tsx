@@ -4,7 +4,7 @@ const GameTimer = () => {
     return (
         <>
             <Typography align="center" paddingTop={1} paddingBottom={2}>
-                Time Left: 5:00
+                Time Elapsed: 0:00
             </Typography>
         </>
     );
