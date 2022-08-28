@@ -7,8 +7,6 @@ import Navbar from '../../components/Navbar'
 import { Grid, Paper } from '@mui/material'
 import { makeStyles } from '@mui/styles';
 
-import { styled } from '@mui/material/styles';
-
 import { GameObject } from '../../interfaces'
 import useFirebaseRef from '../../hooks/useFirebaseRef'
 import NotFoundPage from '../../components/NotFoundPage'
@@ -17,6 +15,7 @@ import StockQuote from '../../components/game/StockQuote'
 import StructureQuotes from '../../components/game/StructureQuotes'
 import OptionChain from '../../components/game/OptionChain'
 import GameLog from '../../components/game/GameLog'
+import CalculatePnl from '../../components/game/CalculatePnl'
 
 const useStyles = makeStyles({
     paper: {
@@ -60,6 +59,7 @@ const GameRoom:NextPage = () => {
                                     </Grid>
                                     <Grid item container xs={4} direction="column">
                                         <StructureQuotes gameId={gameId}/>
+                                        <CalculatePnl gameId={gameId}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
