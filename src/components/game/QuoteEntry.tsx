@@ -88,6 +88,9 @@ const QuoteEntry = (props: QuoteEntryProps) => {
             return;
         }
 
+        bidFloat = Math.round(bidFloat * 100) / 100;
+        askFloat = Math.round(askFloat * 100) / 100;
+
         if (props.isCall) {
             quotes.callBids[props.K_idx] = bidFloat;
             quotes.callAsks[props.K_idx] = askFloat;
