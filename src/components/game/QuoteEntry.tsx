@@ -7,43 +7,118 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
+import firebase from "../../firebase";
+import { UserContext } from "../../context";
+import { UserObject } from "../../interfaces";
 
-import { useState } from "react";
+import { useState, useContext, useMemo, useEffect } from "react";
+
+// Helpful tutorial on working with realtime database + react: 
+//  https://www.youtube.com/watch?v=P-XNZdKQUR0
+
+type FiveNumbers = [number, number, number, number, number];
+interface Quote {
+    callBids: FiveNumbers,
+    callAsks: FiveNumbers,
+    callMarketTimes: FiveNumbers,
+    putBids: FiveNumbers,
+    putAsks: FiveNumbers,
+    putMarketTimes: FiveNumbers
+}
 
 interface QuoteEntryProps {
     gameId: string, 
     K: number,
+    K_idx: number,
     isCall: boolean,
 }
 
 const QuoteEntry = (props: QuoteEntryProps) => {
 
-    const [submitted, setSubmitted] = useState(false);
-    const [bid, setBid] = useState("");
-    const [ask, setAsk] = useState("");
+    const user = useContext(UserContext) as any as UserObject;
+    let databasePath = `gameData/${props.gameId}/markets/${user?.id}`;
+
+    const [quotes, setQuotes] = useState<Quote | null>(null);
+
+    useEffect(() => {
+        const ref = firebase.database().ref(databasePath);
+        ref.on("value", (snapshot) => {
+            setQuotes(snapshot.val());
+        });
+        return () => ref.off();
+    }, [databasePath]);
+
+    const parseQuote = (quotes: Quote | null, isCall: boolean, K_idx: number) => {
+        if (!quotes) {
+            return [false, process.env.NO_MARKET, process.env.NO_MARKET] as const;
+        }
+        let bid: string = process.env.NO_MARKET || "";
+        let ask: string = process.env.NO_MARKET || "";
+        if (isCall) {
+            bid = quotes.callBids[K_idx].toString();
+            ask = quotes.callAsks[K_idx].toString();
+        } else {
+            bid = quotes.putBids[K_idx].toString();
+            ask = quotes.putAsks[K_idx].toString();
+        }
+        let submitted = !(bid === process.env.NO_MARKET || ask === process.env.NO_MARKET);
+        return [submitted, bid, ask] as const;
+    }
+
+    const [submitted, bid, ask] = parseQuote(quotes, props.isCall, props.K_idx);
+    const [bidInput, setBidInput] = useState("");
+    const [askInput, setAskInput] = useState("");
     const [warningOpen, setWarningOpen] = useState(false);
 
+
     const handleSubmitQuote = () => {
-        console.log("handle submit quote! bid: ", bid, " ask: ", ask);
-        if (bid.length === 0 || ask.length === 0) {
+        if (bidInput.length === 0 || askInput.length === 0) {
             setWarningOpen(true);
             return;
         }
 
-        let bidFloat = parseFloat(bid);
-        let askFloat = parseFloat(ask);
-        if (bidFloat.toString() != bid || askFloat.toString() != ask) {
+        let bidFloat = parseFloat(bidInput);
+        let askFloat = parseFloat(askInput);
+        if (bidFloat.toString() != bidInput || askFloat.toString() != askInput) {
             setWarningOpen(true);
             return;
         }
 
+        if (!quotes) {
+            return;
+        }
 
-        setSubmitted(true);
-
+        if (props.isCall) {
+            quotes.callBids[props.K_idx] = bidFloat;
+            quotes.callAsks[props.K_idx] = askFloat;
+        } else {
+            quotes.putBids[props.K_idx] = bidFloat;
+            quotes.putAsks[props.K_idx] = askFloat;
+        }
+        firebase.database().ref(databasePath).set(quotes)
+            .then(() => console.log("Submitted quote successfully"))
+            .catch((reason) => {
+                console.warn(`Failed to submit market (${reason})`);
+            });
     }
 
     const handleCancelQuote = () => {
-        setSubmitted(false);
+        if (!quotes) {
+            return;
+        }
+
+        if (props.isCall) {
+            quotes.callBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+            quotes.callAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+        } else {
+            quotes.putBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+            quotes.putAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+        }
+        firebase.database().ref(databasePath).set(quotes)
+            .then(() => console.log("Canceled quote successfully"))
+            .catch((reason) => {
+                console.warn(`Failed to cancel market (${reason})`);
+            });
     }
 
     const handleInputEnter = (event: any) => {
@@ -53,11 +128,11 @@ const QuoteEntry = (props: QuoteEntryProps) => {
     }
 
     const handleBidChange = (event: any) => {
-        setBid(event.target.value);
+        setBidInput(event.target.value);
     }
 
     const handleAskChange = (event: any) => {
-        setAsk(event.target.value);
+        setAskInput(event.target.value);
     }
 
 
@@ -112,7 +187,7 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                             size="small" style={{ padding: 5 }}
                             onKeyDown={handleInputEnter}
                             onChange={handleBidChange}
-                            value={bid}
+                            value={bidInput}
                         >
                         </TextField>
                     </Tooltip>
@@ -121,7 +196,7 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                             size="small" style={{ padding: 5 }}
                             onKeyDown={handleInputEnter}
                             onChange={handleAskChange}
-                            value={ask}
+                            value={askInput}
                         >
                         </TextField>
                     </Tooltip>

@@ -3,7 +3,9 @@ import Grid from "@mui/material/Grid";
 
 import OptionQuoteRow from "./OptionQuoteRow";
 
-import useFirebaseRef from "../../hooks/useFirebaseRef";
+import { useEffect, useState } from "react";
+import firebase from "../../firebase";
+import NotFoundPage from "../NotFoundPage";
 
 interface UserMarkets { 
     [userId: string]: { bid: number, ask: number, time: number } 
@@ -20,12 +22,24 @@ interface OptionChainProps {
 
 const OptionChain = (props: OptionChainProps) => {
 
-    const [gameData, _] = useFirebaseRef(`gameData/${props.gameId}`, true);
-    const gameDataObj = gameData as any;
+    const [gameData, setGameData] = useState<any>(null);
 
-    let marketsObj = gameDataObj?.markets;
+    let databasePath = `gameData/${props.gameId}`;
+    useEffect(() => {
+        const ref = firebase.database().ref(databasePath);
+        ref.on("value", (snapshot) => {
+            setGameData(snapshot.val());
+        });
+        return () => ref.off();
+    }, [databasePath]);
+
+    if (!gameData) {
+        return <NotFoundPage/>;
+    }
+
+    let marketsObj = gameData.markets;
     let markets: Array<Markets> = [];
-    gameDataObj?.initialState.strikes.forEach((strike: number, i: number) => {
+    gameData.initialState.strikes.forEach((strike: number, i: number) => {
         let userCallMarkets : UserMarkets = {};
         let userPutMarkets : UserMarkets = {};
 
@@ -76,35 +90,40 @@ const OptionChain = (props: OptionChainProps) => {
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
                     <OptionQuoteRow 
                         gameId={props.gameId} 
-                        K={gameDataObj?.initialState.strikes[0]} 
+                        K={gameData.initialState.strikes[0]} 
+                        K_idx={0}
                         market={markets[0]}
                     />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
                     <OptionQuoteRow 
                         gameId={props.gameId} 
-                        K={gameDataObj?.initialState.strikes[1]} 
+                        K={gameData.initialState.strikes[1]} 
+                        K_idx={1}
                         market={markets[1]}
                     />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
                     <OptionQuoteRow 
                         gameId={props.gameId} 
-                        K={gameDataObj?.initialState.strikes[2]} 
+                        K={gameData.initialState.strikes[2]} 
+                        K_idx={2}
                         market={markets[2]}
                     />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
                     <OptionQuoteRow 
                         gameId={props.gameId} 
-                        K={gameDataObj?.initialState.strikes[3]} 
+                        K={gameData.initialState.strikes[3]} 
+                        K_idx={3}
                         market={markets[3]}
                     />
                 </Grid>
                 <Grid container style={{ borderBottom: 'solid', padding: 10 }}>
                     <OptionQuoteRow 
                         gameId={props.gameId} 
-                        K={gameDataObj?.initialState.strikes[4]} 
+                        K={gameData.initialState.strikes[4]} 
+                        K_idx={4}
                         market={markets[4]}
                     />
                 </Grid>

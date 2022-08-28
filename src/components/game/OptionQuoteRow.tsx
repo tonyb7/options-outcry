@@ -3,7 +3,6 @@ import Grid from "@mui/material/Grid";
 import OptionQuote from "./OptionQuote";
 import QuoteEntry from "./QuoteEntry";
 import { Markets } from "./OptionChain";
-import { StepIconClassKey } from "@mui/material";
 
 // Returns index based on price-time priority, and comp functor. 
 // Functors used are just for min and max.
@@ -38,6 +37,7 @@ function findByPriceTime(
 interface OptionQuoteRowProps {
     gameId: string,
     K: number,
+    K_idx: number,
     market: Markets
 }
 
@@ -131,6 +131,7 @@ const OptionQuoteRow = (props: OptionQuoteRowProps) => {
                 <QuoteEntry 
                     gameId={props.gameId}
                     K={props.K} 
+                    K_idx={props.K_idx}
                     isCall={true} 
                 />
             </Grid>
@@ -147,7 +148,8 @@ const OptionQuoteRow = (props: OptionQuoteRowProps) => {
                 <QuoteEntry 
                     gameId={props.gameId} 
                     K={props.K} 
-                    isCall={true} 
+                    K_idx={props.K_idx}
+                    isCall={false} 
                 />
             </Grid>
         </>

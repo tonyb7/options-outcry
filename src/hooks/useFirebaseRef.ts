@@ -12,14 +12,19 @@ function useFirebaseRef(path: string, once = false) {
       const ref = firebase.database().ref(path);
       const update = (snapshot: any) => {
         // console.log("useFirebaseRef GOT VALUE");
-        if (once) ref.off("value", update);
+        if (once) {
+          ref.off("value", update);
+          // ref.off("child_changed", update);
+        }
         setValue(snapshot.val());
         setLoading(false);
       };
       ref.on("value", update);
+      // ref.on("child_changed", update);
       // console.log("useFirebaseRef LISTENING FOR VALUE");
       return () => {
         ref.off("value", update);
+        // ref.off("child_changed", update);
       };
     }
   }, [path, once]);
