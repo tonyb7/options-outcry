@@ -21,29 +21,10 @@ interface GameTimerProps {
 
 const GameTimer = (props: GameTimerProps) => {
 
-    const [startedAt, setStartedAt] = useState(0);
-    const [endedAt, setEndedAt] = useState(0);
-    const [gameStatus, setGameStatus] = useState("");
-
-    const time = useMoment(500);
-    const gameTime = gameStatus === "done" ? endedAt : time;
-
-    useEffect(() => {
-        const ref = firebase.database().ref(`games/${props.gameId}`);
-        ref.once("value", snapshot => {
-            const game: GameObject = snapshot.val();
-            setStartedAt(game.startedAt);
-            setEndedAt(game.endedAt);
-            setGameStatus(game.status);
-        });
-        return () => ref.off();
-    }, []);
-
     return (
         <>
             <Typography align="center" paddingTop={1} paddingBottom={2}>
-                Time Elapsed: {formatTime(gameTime.valueOf() - startedAt, gameStatus !== "done")}
-                {/* Time Elapsed: {GetTimeElapsed(props.gameId)} */}
+                Time Elapsed: {GetTimeElapsed(props.gameId)}
             </Typography>
         </>
     );
