@@ -6,6 +6,8 @@ export interface UserObject {
 
 export interface GameObject {
     createdAt: number,
+    startedAt: number,
+    endedAt: number,
     host: string,
     status: string,
     users: any[]

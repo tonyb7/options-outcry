@@ -20,7 +20,7 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         const ref = firebase.database().ref(`games/${props.gameId}`);
         ref.once("value", snapshot => {
             const game: GameObject = snapshot.val();
-            setIsHost(game.host === user.id);
+            setIsHost(game.host === user?.id);
         });
         return () => ref.off();
     }, [props.gameId]);

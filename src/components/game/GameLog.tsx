@@ -55,7 +55,7 @@ const GameLog = (props: any) => {
             <Typography variant="h5" align="center">
                 Log
             </Typography>
-            <GameTimer/>
+            <GameTimer gameId={props.gameId}/>
             <Paper style={{ minHeight: '70vh', maxHeight: '70vh', overflow: 'auto', margin: 5 }}>
                 <List>
                     {Object.entries(messages)
