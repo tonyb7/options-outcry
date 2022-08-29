@@ -19,7 +19,8 @@ export interface OptionFairValue {
 }
 export interface PnlStats {
     userPnls: Array<UserPnl>,
-    fairs: Array<OptionFairValue>
+    fairs: Array<OptionFairValue>,
+    gameStartedAt: number
 };
 
 interface CalculatePnlProps {
@@ -32,12 +33,13 @@ const CalculatePnl = (props: CalculatePnlProps) => {
     // Calc pnl button can only be pressed by the host. 
     const user = useContext(UserContext) as any as UserObject;
     const [isHost, setIsHost] = useState(false);
+    const [startedAt, setStartedAt] = useState(0);
     useEffect(() => {
         const ref = firebase.database().ref(`games/${props.gameId}`);
         ref.once("value", snapshot => {
             const game: GameObject = snapshot.val();
-            console.log("GAME.HOST: ", game.host, ", USER?.ID: ", user?.id);
             setIsHost(game.host === user?.id);
+            setStartedAt(game.startedAt);
         });
         return () => ref.off();
     }, [props.gameId]);
@@ -101,7 +103,8 @@ const CalculatePnl = (props: CalculatePnlProps) => {
                     callValue: 0.01,
                     putValue: 8.5
                 },
-            ]
+            ],
+            gameStartedAt: startedAt
         }
 
         AddPnlMessage(props.gameId, pnlStats);

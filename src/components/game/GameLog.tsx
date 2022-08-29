@@ -14,7 +14,9 @@ import Filter from "bad-words";
 import firebase from "../../firebase";
 import { UserContext } from "../../context";
 import User from "../User";
+
 import { PnlStats, UserPnl } from "./CalculatePnl";
+import { formatTime } from "./GameTimer";
 
 const GameLog = (props: any) => {
 
@@ -51,7 +53,7 @@ const GameLog = (props: any) => {
         }
     }
 
-    const returnServerMessage = (item: any, key: any) => {
+    const returnServerMessage = (item: any, key: any, gameId: string) => {
         if (item.type === "pnl" && item.hasOwnProperty('pnlStats') && item.pnlStats) {
 
             const pnlStats = item.pnlStats;
@@ -80,15 +82,19 @@ const GameLog = (props: any) => {
             //     fairs: Array<OptionFairValue>
             // };
             console.log("PnlStats: ", pnlStats);
+            pnlStats.userPnls.map((userpnl: UserPnl, i: number) => console.log("user pnl: ", userpnl, " i=", i))
             return (
                 <Paper key={key}>
                     <Typography
-                        style={{ fontSize: 12, fontWeight: 'bold', marginTop: 10 }}
+                        style={{ fontSize: 12, fontWeight: 'bold', margin: 10 }}
                     >
-                        These are PnL statistics if the inside market on each option was executed against: 
-                        {pnlStats.userPnls.forEach((userpnl: UserPnl, i: number) => (
-                            <Typography key={i}>
-                                {userpnl.userName + ": " + userpnl.pnl} hello
+                        ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) These are PnL statistics if the inside market on each option was executed against: 
+                        {pnlStats.userPnls.map((userpnl: UserPnl, i: number) => (
+                            <Typography 
+                                key={i}
+                                style={{ fontSize: 12, marginTop: 10 }}
+                            >
+                                <b>{userpnl.userName}: </b>{userpnl.pnl.toFixed(2)}
                             </Typography>
                         ))}
                     </Typography>
@@ -123,7 +129,7 @@ const GameLog = (props: any) => {
                                     <b><User id={item.user}/></b>: {item.message}
                                 </ListItem>
                             ) : (
-                                returnServerMessage(item, key)
+                                returnServerMessage(item, key, props.gameId)
                             )
                         )
                     }

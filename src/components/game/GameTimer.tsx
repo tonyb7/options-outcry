@@ -7,7 +7,7 @@ import firebase from "../../firebase";
 import { GameObject } from "../../interfaces";
 import useMoment from "../../hooks/useMoment";
 
-function formatTime(t: number, hideSubsecond: boolean) {
+export function formatTime(t: number, hideSubsecond: boolean): string {
     t = Math.max(t, 0);
     const hours = Math.floor(t / (3600 * 1000));
     const rest = t % (3600 * 1000);
@@ -32,7 +32,7 @@ const GameTimer = (props: GameTimerProps) => {
 }
 
 // Used by external components who want the timestamp (such as CalculatePnl)
-export function GetTimeElapsed(gameId: string) {
+export function GetTimeElapsed(gameId: string): string {
     const [startedAt, setStartedAt] = useState(0);
     const [endedAt, setEndedAt] = useState(0);
     const [gameStatus, setGameStatus] = useState("");
