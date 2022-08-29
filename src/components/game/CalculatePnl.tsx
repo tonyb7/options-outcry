@@ -29,9 +29,27 @@ const CalculatePnl = (props: CalculatePnlProps) => {
     const [gameData, setGameData] = useState<any>(null);
     const calculatePnl = () => {
         const ref = firebase.database().ref(`gameData/${props.gameId}`);
-        ref.once("value", snapshot => {
+        let promise: Promise<any> = ref.once("value", snapshot => {
             setGameData(snapshot.val());
         });
+        Promise.resolve(promise);
+
+        // "initialStateOptionFairs": {
+        //     "calls": {},
+        //     "puts": {}
+        // },
+        // initialState.strikes
+        // "markets": {
+        //     "$user": {
+        //         "callBids": {},
+        //         "callAsks": {},
+        //         "callMarketTimes": {},
+        //         "putBids": {},
+        //         "putAsks": {},
+        //         "putMarketTimes": {}
+        //     }
+        // },
+
     }
 
     return (
