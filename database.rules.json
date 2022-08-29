@@ -165,6 +165,10 @@
                     "time": {
                         ".validate": "newData.isNumber() && newData.val() == now"
                     },
+                    "type": {
+                        ".validate": "newData.isString()"
+                    },
+                    "pnlStats": {},
                     "$other": {
                         ".validate": false
                     }

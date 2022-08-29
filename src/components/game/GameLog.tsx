@@ -14,6 +14,7 @@ import Filter from "bad-words";
 import firebase from "../../firebase";
 import { UserContext } from "../../context";
 import User from "../User";
+import { PnlStats } from "./CalculatePnl";
 
 const GameLog = (props: any) => {
 
@@ -86,6 +87,27 @@ const GameLog = (props: any) => {
             </form>
         </>
     );
+}
+
+export function AddServerMessage(gameId: string, message: string): void {
+    const databasePath = `chats/${gameId}`;
+    firebase.database().ref(databasePath).push({
+        user: process.env.SERVER_USER_ID,
+        message: message,
+        time: firebase.database.ServerValue.TIMESTAMP,
+        type: "text",
+    });
+}
+
+export function AddPnlMessage(gameId: string, pnlStats: PnlStats): void {
+    const databasePath = `chats/${gameId}`;
+    firebase.database().ref(databasePath).push({
+        user: process.env.SERVER_USER_ID,
+        message: "PNL STATS (SHOULD NOT SEE THIS)",
+        time: firebase.database.ServerValue.TIMESTAMP,
+        pnlStats: pnlStats,
+        type: "pnl",
+    });
 }
 
 export default GameLog;

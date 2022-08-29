@@ -6,6 +6,22 @@ import { UserContext } from "../../context";
 import { UserObject, GameObject } from "../../interfaces";
 import firebase from "../../firebase";
 
+import { AddPnlMessage } from "./GameLog";
+
+interface UserPnl {
+    userName: string,
+    pnl: number
+}
+interface OptionFairValue {
+    K: number,
+    callValue: number,
+    putValue: number
+}
+export interface PnlStats {
+    userPnls: Array<UserPnl>,
+    fairs: Array<OptionFairValue>
+};
+
 interface CalculatePnlProps {
     gameId: string
 }
@@ -20,6 +36,7 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         const ref = firebase.database().ref(`games/${props.gameId}`);
         ref.once("value", snapshot => {
             const game: GameObject = snapshot.val();
+            console.log("GAME.HOST: ", game.host, ", USER?.ID: ", user?.id);
             setIsHost(game.host === user?.id);
         });
         return () => ref.off();
@@ -34,6 +51,7 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         });
         Promise.resolve(promise);
 
+        // turn this:
         // "initialStateOptionFairs": {
         //     "calls": {},
         //     "puts": {}
@@ -49,6 +67,44 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         //         "putMarketTimes": {}
         //     }
         // },
+
+        // into this:
+        // These are PnL statistics if the inside market on each option was executed against:
+        // User: PnL
+        // User: PnL
+        // ...
+        // User: PnL
+        // Fairs Used:
+        //      K1 Call: _, K1 Put: _
+        //      K2 Call: _, K2 Put: _
+        //      ...
+        //      K5 Call: _, K5 Put: _
+        let pnlStats: PnlStats = {
+            userPnls: [
+                {
+                    userName: "User1",
+                    pnl: 0.1
+                },
+                {
+                    userName: "User2",
+                    pnl: 0.2
+                },
+            ],
+            fairs: [
+                {
+                    K: 60,
+                    callValue: 0.15,
+                    putValue: 4.5
+                },
+                {
+                    K: 65,
+                    callValue: 0.01,
+                    putValue: 8.5
+                },
+            ]
+        }
+
+        AddPnlMessage(props.gameId, pnlStats);
 
     }
 
