@@ -7,14 +7,7 @@ import { useEffect, useState } from "react";
 import firebase from "../../firebase";
 import NotFoundPage from "../NotFoundPage";
 
-interface UserMarkets { 
-    [userId: string]: { bid: number, ask: number, time: number } 
-}
-export interface Markets {
-    strike: number,
-    userCallMarkets: UserMarkets,
-    userPutMarkets: UserMarkets
-}
+import { Markets, GetFormattedMarkets } from "./QuoteUtils";
 
 interface OptionChainProps {
     gameId: string
@@ -37,32 +30,7 @@ const OptionChain = (props: OptionChainProps) => {
         return <NotFoundPage/>;
     }
 
-    let marketsObj = gameData.markets;
-    let markets: Array<Markets> = [];
-    gameData.initialState.strikes.forEach((strike: number, i: number) => {
-        let userCallMarkets : UserMarkets = {};
-        let userPutMarkets : UserMarkets = {};
-
-        for (let userId in marketsObj) {
-            let userMarkets = marketsObj[userId];
-            userCallMarkets[userId] = { 
-                bid: userMarkets.callBids[i], 
-                ask: userMarkets.callAsks[i], 
-                time: userMarkets.callMarketTimes[i] 
-            };
-            userPutMarkets[userId] = { 
-                bid: userMarkets.putBids[i], 
-                ask: userMarkets.putAsks[i], 
-                time: userMarkets.callMarketTimes[i] 
-            };
-        }
-    
-        markets.push({
-            strike: strike,
-            userCallMarkets: userCallMarkets,
-            userPutMarkets: userPutMarkets
-        });
-    });
+    let markets: Array<Markets> = GetFormattedMarkets(gameData.markets, gameData.initialState.strikes);
 
     return (
         <>

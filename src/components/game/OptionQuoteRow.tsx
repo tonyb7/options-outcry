@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 
 import OptionQuote from "./OptionQuote";
 import QuoteEntry from "./QuoteEntry";
-import { Markets } from "./OptionChain";
+import { Markets } from "./QuoteUtils";
 import { GetInsideMarkets, InsideMarkets } from "./QuoteUtils";
 
 interface OptionQuoteRowProps {

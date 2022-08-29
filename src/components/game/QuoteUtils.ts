@@ -1,4 +1,44 @@
-import { Markets } from "./OptionChain";
+
+interface UserMarkets { 
+    [userId: string]: { bid: number, ask: number, time: number } 
+}
+export interface Markets {
+    strike: number,
+    userCallMarkets: UserMarkets,
+    userPutMarkets: UserMarkets
+}
+
+export function GetFormattedMarkets(gameDataMarkets: any, strikes: Array<number>): Array<Markets> {
+
+    let markets: Array<Markets> = [];
+
+    strikes.forEach((strike: number, i: number) => {
+        let userCallMarkets : UserMarkets = {};
+        let userPutMarkets : UserMarkets = {};
+
+        for (let userId in gameDataMarkets) {
+            let userMarkets = gameDataMarkets[userId];
+            userCallMarkets[userId] = { 
+                bid: userMarkets.callBids[i], 
+                ask: userMarkets.callAsks[i], 
+                time: userMarkets.callMarketTimes[i] 
+            };
+            userPutMarkets[userId] = { 
+                bid: userMarkets.putBids[i], 
+                ask: userMarkets.putAsks[i], 
+                time: userMarkets.callMarketTimes[i] 
+            };
+        }
+    
+        markets.push({
+            strike: strike,
+            userCallMarkets: userCallMarkets,
+            userPutMarkets: userPutMarkets
+        });
+    });
+    
+    return markets;
+}
 
 // Returns index based on price-time priority, and comp functor. 
 // Functors used are just for min and max.
