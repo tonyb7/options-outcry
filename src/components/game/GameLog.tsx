@@ -14,7 +14,7 @@ import Filter from "bad-words";
 import firebase from "../../firebase";
 import { UserContext } from "../../context";
 import User from "../User";
-import { PnlStats } from "./CalculatePnl";
+import { PnlStats, UserPnl } from "./CalculatePnl";
 
 const GameLog = (props: any) => {
 
@@ -51,6 +51,60 @@ const GameLog = (props: any) => {
         }
     }
 
+    const returnServerMessage = (item: any, key: any) => {
+        if (item.type === "pnl" && item.hasOwnProperty('pnlStats') && item.pnlStats) {
+
+            const pnlStats = item.pnlStats;
+            // These are PnL statistics if the inside market on each option was executed against:
+            // User: PnL
+            // User: PnL
+            // ...
+            // User: PnL
+            // Fairs Used:
+            //      K1 Call: _, K1 Put: _
+            //      K2 Call: _, K2 Put: _
+            //      ...
+            //      K5 Call: _, K5 Put: _
+
+            // interface UserPnl {
+            //     userName: string,
+            //     pnl: number
+            // }
+            // interface OptionFairValue {
+            //     K: number,
+            //     callValue: number,
+            //     putValue: number
+            // }
+            // export interface PnlStats {
+            //     userPnls: Array<UserPnl>,
+            //     fairs: Array<OptionFairValue>
+            // };
+            console.log("PnlStats: ", pnlStats);
+            return (
+                <Paper key={key}>
+                    <Typography
+                        style={{ fontSize: 12, fontWeight: 'bold', marginTop: 10 }}
+                    >
+                        These are PnL statistics if the inside market on each option was executed against: 
+                        {pnlStats.userPnls.forEach((userpnl: UserPnl, i: number) => (
+                            <Typography key={i}>
+                                {userpnl.userName + ": " + userpnl.pnl} hello
+                            </Typography>
+                        ))}
+                    </Typography>
+                </Paper>
+            );
+        }
+        // console.assert(item.type === "text");
+        return (
+            <Paper key={key}>
+                <ListItem key={key} style={{ fontSize: 12 }}>
+                    {item.message}
+                </ListItem>
+            </Paper>
+        );
+    }
+
     return (
         <>
             <Typography variant="h5" align="center">
@@ -59,7 +113,8 @@ const GameLog = (props: any) => {
             <GameTimer gameId={props.gameId}/>
             <Paper style={{ minHeight: '70vh', maxHeight: '70vh', overflow: 'auto', margin: 5 }}>
                 <List>
-                    {Object.entries(messages)
+                    {
+                    Object.entries(messages)
                         .sort(([, a]: [any, any], [, b]: [any, any]) => a.time - b.time) 
                         .map(([key, item]: [any, any]) => 
                             item.user !== process.env.SERVER_USER_ID ? 
@@ -68,13 +123,10 @@ const GameLog = (props: any) => {
                                     <b><User id={item.user}/></b>: {item.message}
                                 </ListItem>
                             ) : (
-                                <Paper key={key}>
-                                    <ListItem key={key} style={{ fontSize: 12 }}>
-                                        {item.message}
-                                    </ListItem>
-                                </Paper>
+                                returnServerMessage(item, key)
                             )
-                    )}
+                        )
+                    }
                 </List>
             </Paper>
             <form onSubmit={handleSubmit} style={{ margin: 5 }}>

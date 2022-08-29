@@ -8,11 +8,11 @@ import firebase from "../../firebase";
 
 import { AddPnlMessage } from "./GameLog";
 
-interface UserPnl {
+export interface UserPnl {
     userName: string,
     pnl: number
 }
-interface OptionFairValue {
+export interface OptionFairValue {
     K: number,
     callValue: number,
     putValue: number
