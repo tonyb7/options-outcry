@@ -90,21 +90,30 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         strikes.forEach((strike: number, i: number) => {
             let insideMarket: InsideMarkets = GetInsideMarkets(markets[i]);
             
+            // console.log("Working on strike: ", strike);
             if (parseFloat(insideMarket.callBestBid).toFixed(2) === insideMarket.callBestBid) {
                 let pnlDiff = fairs[i].callValue - parseFloat(insideMarket.callBestBid);
                 userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnl += pnlDiff;
+                // console.log("call bid pnldiff: ", pnlDiff);
+                // console.log("user pnls: ", userPnls);
             }
             if (parseFloat(insideMarket.callBestAsk).toFixed(2) === insideMarket.callBestAsk) {
                 let pnlDiff = parseFloat(insideMarket.callBestAsk) - fairs[i].callValue;
                 userPnls[userIdToIdxMap[insideMarket.callBestAskUserId]].pnl += pnlDiff;
+                // console.log("call ask pnldiff: ", pnlDiff);
+                // console.log("user pnls: ", userPnls);
             }
             if (parseFloat(insideMarket.putBestBid).toFixed(2) === insideMarket.putBestBid) {
                 let pnlDiff = fairs[i].putValue - parseFloat(insideMarket.putBestBid);
                 userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnl += pnlDiff;
+                // console.log("put bid pnldiff: ", pnlDiff);
+                // console.log("user pnls: ", userPnls);
             }
             if (parseFloat(insideMarket.putBestAsk).toFixed(2) === insideMarket.putBestAsk) {
                 let pnlDiff = parseFloat(insideMarket.putBestAsk) - fairs[i].putValue;
                 userPnls[userIdToIdxMap[insideMarket.putBestAskUserId]].pnl += pnlDiff;
+                // console.log("put ask pnldiff: ", pnlDiff);
+                // console.log("user pnls: ", userPnls);
             }
         });
 
