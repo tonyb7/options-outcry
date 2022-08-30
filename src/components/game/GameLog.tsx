@@ -65,10 +65,10 @@ const GameLog = (props: any) => {
         if (item.type === "pnl" && item.hasOwnProperty('pnlStats') && item.pnlStats) {
 
             const pnlStats = item.pnlStats;
-            pnlStats.userPnls.map((userpnl: UserPnl, i: number) => console.log("user pnl: ", userpnl, " i=", i))
             return (
                 <Paper key={key}>
                     <Typography
+                        component={'span'}
                         style={{ fontSize: 12, fontWeight: 'bold', margin: 10, marginTop: 25 }}
                     >
                         ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) 

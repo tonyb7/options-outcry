@@ -6,7 +6,9 @@ import { UserContext } from "../../context";
 import { UserObject, GameObject } from "../../interfaces";
 import firebase from "../../firebase";
 
-import { AddPnlMessage } from "./GameLog";
+import { AddServerMessage, AddPnlMessage } from "./GameLog";
+import { Markets, GetFormattedMarkets, InsideMarkets, GetInsideMarkets } from "./QuoteUtils";
+import { GetUserNameFromIdNoHook } from "../User";
 
 export interface UserPnl {
     userName: string,
@@ -38,77 +40,81 @@ const CalculatePnl = (props: CalculatePnlProps) => {
         const ref = firebase.database().ref(`games/${props.gameId}`);
         ref.once("value", snapshot => {
             const game: GameObject = snapshot.val();
+            console.log("game.host=", game.host, ", user?.id=", user?.id);
             setIsHost(game.host === user?.id);
             setStartedAt(game.startedAt);
         });
         return () => ref.off();
-    }, [props.gameId]);
+    // }, [props.gameId]);
+    });
 
 
     const [gameData, setGameData] = useState<any>(null);
-    const calculatePnl = () => {
+    const calculatePnl = async () => {
         const ref = firebase.database().ref(`gameData/${props.gameId}`);
-        let promise: Promise<any> = ref.once("value", snapshot => {
+        const getGameData: Promise<any> = ref.once("value", snapshot => {
             setGameData(snapshot.val());
         });
-        Promise.resolve(promise);
+        await Promise.resolve(getGameData);
 
-        // turn this:
-        // "initialStateOptionFairs": {
-        //     "calls": {},
-        //     "puts": {}
-        // },
-        // initialState.strikes
-        // "markets": {
-        //     "$user": {
-        //         "callBids": {},
-        //         "callAsks": {},
-        //         "callMarketTimes": {},
-        //         "putBids": {},
-        //         "putAsks": {},
-        //         "putMarketTimes": {}
-        //     }
-        // },
+        console.log("Game Data: ", gameData);
+        if (!gameData) {
+            AddServerMessage(props.gameId, "Try clicking Calculate PnL one more time");
+            return;
+        }
+        let strikes: Array<number> = gameData.initialState.strikes;
 
-        // into this:
-        // These are PnL statistics if the inside market on each option was executed against:
-        // User: PnL
-        // User: PnL
-        // ...
-        // User: PnL
-        // Fairs Used:
-        //      K1 Call: _, K1 Put: _
-        //      K2 Call: _, K2 Put: _
-        //      ...
-        //      K5 Call: _, K5 Put: _
+        let fairs: Array<OptionFairValue> = [];
+        strikes.forEach((strike: number, i: number) => {
+            let fair: OptionFairValue = {
+                K: strike,
+                callValue: gameData.initialStateOptionFairs.calls[i],
+                putValue: gameData.initialStateOptionFairs.puts[i],
+            };
+            fairs.push(fair);
+        });
+
+        let userPnls: Array<UserPnl> = [];
+        let userIdToIdxMap: { [id: string]: number } = {};
+        let i = 0;
+        for (let userId in gameData.markets) {
+            userIdToIdxMap[userId] = i;
+            let userName = await Promise.resolve(GetUserNameFromIdNoHook(userId));
+            userPnls.push({
+                userName: userName,
+                pnl: 0
+            });
+            i += 1;
+        }
+        let markets: Array<Markets> = GetFormattedMarkets(gameData.markets, strikes)
+        strikes.forEach((strike: number, i: number) => {
+            let insideMarket: InsideMarkets = GetInsideMarkets(markets[i]);
+            
+            if (parseFloat(insideMarket.callBestBid).toFixed(2) === insideMarket.callBestBid) {
+                let pnlDiff = fairs[i].callValue - parseFloat(insideMarket.callBestBid);
+                userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnl += pnlDiff;
+            }
+            if (parseFloat(insideMarket.callBestAsk).toFixed(2) === insideMarket.callBestAsk) {
+                let pnlDiff = parseFloat(insideMarket.callBestAsk) - fairs[i].callValue;
+                userPnls[userIdToIdxMap[insideMarket.callBestAskUserId]].pnl += pnlDiff;
+            }
+            if (parseFloat(insideMarket.putBestBid).toFixed(2) === insideMarket.putBestBid) {
+                let pnlDiff = fairs[i].putValue - parseFloat(insideMarket.putBestBid);
+                userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnl += pnlDiff;
+            }
+            if (parseFloat(insideMarket.putBestAsk).toFixed(2) === insideMarket.putBestAsk) {
+                let pnlDiff = parseFloat(insideMarket.putBestAsk) - fairs[i].putValue;
+                userPnls[userIdToIdxMap[insideMarket.putBestAskUserId]].pnl += pnlDiff;
+            }
+        });
+
         let pnlStats: PnlStats = {
-            userPnls: [
-                {
-                    userName: "User1",
-                    pnl: 0.1
-                },
-                {
-                    userName: "User2",
-                    pnl: 0.2
-                },
-            ],
-            fairs: [
-                {
-                    K: 60,
-                    callValue: 0.15,
-                    putValue: 4.5
-                },
-                {
-                    K: 65,
-                    callValue: 0.01,
-                    putValue: 8.5
-                },
-            ],
+            userPnls: userPnls,
+            fairs: fairs,
             gameStartedAt: startedAt
         }
 
         AddPnlMessage(props.gameId, pnlStats);
-
     }
 
     return (
@@ -126,7 +132,7 @@ const CalculatePnl = (props: CalculatePnlProps) => {
                     disabled={!isHost}
                     variant='contained'
                     style={{ marginLeft: '15%', marginRight: '15%' }}
-                    onClick={calculatePnl}
+                    onClick={() => { calculatePnl(); }}
                 >
                     Calculate PnL
                 </Button>

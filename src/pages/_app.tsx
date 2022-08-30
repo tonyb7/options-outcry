@@ -27,7 +27,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     const darkTheme = createTheme({
         palette: {
             mode: 'light',
-            // mode: 'dark', // I don't like the dark theme
+            // mode: 'dark', // I don't like the dark theme 
+            // TODO: Can make it a user-adjustable option
         },
     });
     useEffect(() => {

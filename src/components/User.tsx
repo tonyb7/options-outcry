@@ -1,5 +1,6 @@
-import useFirebaseRef from "../hooks/useFirebaseRef"
-import { UserObject } from "../interfaces"
+import useFirebaseRef from "../hooks/useFirebaseRef";
+import { UserObject } from "../interfaces";
+import firebase from "../firebase";
 
 interface UserParams {
     id: string
@@ -20,6 +21,13 @@ export function GetUserNameFromId(id: string): string {
     const [user, _] = useFirebaseRef(`users/${id}`);
     const userObj = user as unknown as UserObject
     return userObj ? userObj.name : "...";
+}
+
+export async function GetUserNameFromIdNoHook(id: string): Promise<string> {
+    const ref = firebase.database().ref(`users/${id}`);
+    const getUser: Promise<any> = ref.once("value");
+    let user = await Promise.resolve(getUser);
+    return user.val().name;
 }
 
 export default User 
