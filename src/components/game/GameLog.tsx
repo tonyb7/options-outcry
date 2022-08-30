@@ -3,6 +3,14 @@ import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+
+
 import GameTimer from "./GameTimer";
 import SimpleInput from "../SimpleInput";
 
@@ -15,7 +23,7 @@ import firebase from "../../firebase";
 import { UserContext } from "../../context";
 import User from "../User";
 
-import { PnlStats, UserPnl } from "./CalculatePnl";
+import { PnlStats, UserPnl, OptionFairValue } from "./CalculatePnl";
 import { formatTime } from "./GameTimer";
 
 const GameLog = (props: any) => {
@@ -57,46 +65,47 @@ const GameLog = (props: any) => {
         if (item.type === "pnl" && item.hasOwnProperty('pnlStats') && item.pnlStats) {
 
             const pnlStats = item.pnlStats;
-            // These are PnL statistics if the inside market on each option was executed against:
-            // User: PnL
-            // User: PnL
-            // ...
-            // User: PnL
-            // Fairs Used:
-            //      K1 Call: _, K1 Put: _
-            //      K2 Call: _, K2 Put: _
-            //      ...
-            //      K5 Call: _, K5 Put: _
-
-            // interface UserPnl {
-            //     userName: string,
-            //     pnl: number
-            // }
-            // interface OptionFairValue {
-            //     K: number,
-            //     callValue: number,
-            //     putValue: number
-            // }
-            // export interface PnlStats {
-            //     userPnls: Array<UserPnl>,
-            //     fairs: Array<OptionFairValue>
-            // };
-            console.log("PnlStats: ", pnlStats);
             pnlStats.userPnls.map((userpnl: UserPnl, i: number) => console.log("user pnl: ", userpnl, " i=", i))
             return (
                 <Paper key={key}>
                     <Typography
+                        style={{ fontSize: 12, fontWeight: 'bold', margin: 10, marginTop: 25 }}
+                    >
+                        ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) 
+                        These are PnL statistics if the inside market on each option was executed against: 
+                        <Table>
+                        {pnlStats.userPnls.map((userpnl: UserPnl, i: number) => (
+                            <TableBody key={"pnls" + i}>
+                                <TableRow>
+                                    <TableCell style={{ fontSize: 12, fontWeight: 'bold' }}>{userpnl.userName}</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>{userpnl.pnl.toFixed(2)}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        ))}
+                        </Table>
+                    </Typography>
+                    <Typography
                         style={{ fontSize: 12, fontWeight: 'bold', margin: 10 }}
                     >
-                        ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) These are PnL statistics if the inside market on each option was executed against: 
-                        {pnlStats.userPnls.map((userpnl: UserPnl, i: number) => (
-                            <Typography 
-                                key={i}
-                                style={{ fontSize: 12, marginTop: 10 }}
-                            >
-                                <b>{userpnl.userName}: </b>{userpnl.pnl.toFixed(2)}
-                            </Typography>
+                        Option fairs used to calculate PnLs:
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ fontSize: 12 }}>Strike</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>Call Fair</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>Put Fair</TableCell>
+                                </TableRow>
+                            </TableHead>
+                        {pnlStats.fairs.map((fairs: OptionFairValue, i: number) => (
+                            <TableBody key={"fairs" + i}>
+                                <TableRow>
+                                    <TableCell style={{ fontSize: 12, fontWeight: 'bold' }}>{fairs.K}</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>{fairs.callValue.toFixed(2)}</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>{fairs.putValue.toFixed(2)}</TableCell>
+                                </TableRow>
+                            </TableBody>
                         ))}
+                        </Table>
                     </Typography>
                 </Paper>
             );
