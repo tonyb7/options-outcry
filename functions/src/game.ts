@@ -1,6 +1,6 @@
-import { assert } from "console";
+import {assert} from "console";
 
-var bs = require('black-scholes');
+const bs = require("black-scholes");
 
 interface InitialState {
     lowestStrike: number,

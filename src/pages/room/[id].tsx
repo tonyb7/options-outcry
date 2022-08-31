@@ -93,7 +93,7 @@ const WaitingRoom:NextPage = () => {
                     console.warn(`Failed to join game (${reason})`);
                 });
         }
-    }, [user, game, id, leaving]);
+    }, [userObj, game, gameObj, id, leaving]);
 
     if (gameObj && gameObj.status !== "waiting" && !leaving) {
         router.push(`/game/${id}`);

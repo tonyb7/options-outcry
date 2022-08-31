@@ -70,24 +70,30 @@ const QuoteEntry = (props: QuoteEntryProps) => {
     const [askInput, setAskInput] = useState("");
     const [warningOpen, setWarningOpen] = useState(false);
 
-
+    function isNumeric(str: string) {
+        return !isNaN(+str);
+    }
+      
     const handleSubmitQuote = () => {
+        console.log("SUBMIT QUOTE CALLED");
         if (bidInput.length === 0 || askInput.length === 0) {
+            console.log("SET WARNING OPEN 2");
             setWarningOpen(true);
             return;
         }
 
-        let bidFloat = parseFloat(bidInput);
-        let askFloat = parseFloat(askInput);
-        if (bidFloat.toString() != bidInput || askFloat.toString() != askInput) {
+        if (!isNumeric(bidInput) || !isNumeric(askInput)) {
+            console.log("SET WARNING OPEN 1");
             setWarningOpen(true);
             return;
         }
-
+        
         if (!quotes) {
             return;
         }
-
+        
+        let bidFloat = parseFloat(bidInput);
+        let askFloat = parseFloat(askInput);
         bidFloat = Math.round(bidFloat * 100) / 100;
         askFloat = Math.round(askFloat * 100) / 100;
 
