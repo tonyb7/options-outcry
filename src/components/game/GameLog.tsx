@@ -85,6 +85,25 @@ const GameLog = (props: any) => {
                         </Table>
                     </Typography>
                     <Typography
+                        component={'span'}
+                        style={{ fontSize: 12, fontWeight: 'bold', margin: 10, marginTop: 25 }}
+                    >
+                        ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) 
+                        These are PnL statistics if the spread was collected on "correct" markets, 
+                        and only the incorrect leg was traded against on "incorrect" markets. Correct is defined as the 
+                        option fair value being within the inside market: 
+                        <Table>
+                        {pnlStats.userPnls.map((userpnl: UserPnl, i: number) => (
+                            <TableBody key={"pnls" + i}>
+                                <TableRow>
+                                    <TableCell style={{ fontSize: 12, fontWeight: 'bold' }}>{userpnl.userName}</TableCell>
+                                    <TableCell style={{ fontSize: 12 }}>{userpnl.pnlAdverse.toFixed(2)}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        ))}
+                        </Table>
+                    </Typography>
+                    <Typography
                         style={{ fontSize: 12, fontWeight: 'bold', margin: 10 }}
                     >
                         Option fairs used to calculate PnLs:

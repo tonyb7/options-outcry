@@ -12,7 +12,8 @@ import { GetUserNameFromIdNoHook } from "../User";
 
 export interface UserPnl {
     userName: string,
-    pnl: number
+    pnl: number,
+    pnlAdverse: number,
 }
 export interface OptionFairValue {
     K: number,
@@ -82,38 +83,64 @@ const CalculatePnl = (props: CalculatePnlProps) => {
             let userName = await Promise.resolve(GetUserNameFromIdNoHook(userId));
             userPnls.push({
                 userName: userName,
-                pnl: 0
+                pnl: 0,
+                pnlAdverse: 0,
             });
             i += 1;
         }
         let markets: Array<Markets> = GetFormattedMarkets(gameData.markets, strikes)
         strikes.forEach((strike: number, i: number) => {
             let insideMarket: InsideMarkets = GetInsideMarkets(markets[i]);
+
+            let validCallBid = parseFloat(insideMarket.callBestBid).toFixed(2) === insideMarket.callBestBid;
+            let validCallAsk = parseFloat(insideMarket.callBestAsk).toFixed(2) === insideMarket.callBestAsk;
+            let validPutBid = parseFloat(insideMarket.putBestBid).toFixed(2) === insideMarket.putBestBid;
+            let validPutAsk = parseFloat(insideMarket.putBestAsk).toFixed(2) === insideMarket.putBestAsk;
             
-            // console.log("Working on strike: ", strike);
-            if (parseFloat(insideMarket.callBestBid).toFixed(2) === insideMarket.callBestBid) {
-                let pnlDiff = fairs[i].callValue - parseFloat(insideMarket.callBestBid);
-                userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnl += pnlDiff;
-                // console.log("call bid pnldiff: ", pnlDiff);
-                // console.log("user pnls: ", userPnls);
+            console.log("(calculate pnl) Strike: ", strike);
+
+            if (validCallBid && validCallAsk) {
+                let bid = parseFloat(insideMarket.callBestBid);
+                let ask = parseFloat(insideMarket.callBestAsk);
+                let spread = ask - bid;
+
+                let pnlDiffBid = fairs[i].callValue - bid;
+                userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnl += pnlDiffBid;
+                if (pnlDiffBid <= spread) {
+                    userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnlAdverse += pnlDiffBid;
+                }
+
+                let pnlDiffAsk = ask - fairs[i].callValue;
+                userPnls[userIdToIdxMap[insideMarket.callBestAskUserId]].pnl += pnlDiffAsk;
+                if (pnlDiffAsk <= spread) {
+                    userPnls[userIdToIdxMap[insideMarket.callBestAskUserId]].pnlAdverse += pnlDiffAsk;
+                }
+
+                console.log("(calculate pnl) Call Bid: ", bid, ", Ask: ", ask, " new bid user pnl: ", 
+                    userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnl, 
+                    ", new bid user adverse pnl: ", userPnls[userIdToIdxMap[insideMarket.callBestBidUserId]].pnlAdverse);
             }
-            if (parseFloat(insideMarket.callBestAsk).toFixed(2) === insideMarket.callBestAsk) {
-                let pnlDiff = parseFloat(insideMarket.callBestAsk) - fairs[i].callValue;
-                userPnls[userIdToIdxMap[insideMarket.callBestAskUserId]].pnl += pnlDiff;
-                // console.log("call ask pnldiff: ", pnlDiff);
-                // console.log("user pnls: ", userPnls);
-            }
-            if (parseFloat(insideMarket.putBestBid).toFixed(2) === insideMarket.putBestBid) {
-                let pnlDiff = fairs[i].putValue - parseFloat(insideMarket.putBestBid);
-                userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnl += pnlDiff;
-                // console.log("put bid pnldiff: ", pnlDiff);
-                // console.log("user pnls: ", userPnls);
-            }
-            if (parseFloat(insideMarket.putBestAsk).toFixed(2) === insideMarket.putBestAsk) {
-                let pnlDiff = parseFloat(insideMarket.putBestAsk) - fairs[i].putValue;
-                userPnls[userIdToIdxMap[insideMarket.putBestAskUserId]].pnl += pnlDiff;
-                // console.log("put ask pnldiff: ", pnlDiff);
-                // console.log("user pnls: ", userPnls);
+
+            if (validPutBid && validPutAsk) {
+                let bid = parseFloat(insideMarket.putBestBid);
+                let ask = parseFloat(insideMarket.putBestAsk);
+                let spread = ask - bid;
+
+                let pnlDiffBid = fairs[i].putValue - bid;
+                userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnl += pnlDiffBid;
+                if (pnlDiffBid <= spread) {
+                    userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnlAdverse += pnlDiffBid;
+                }
+
+                let pnlDiffAsk = ask - fairs[i].putValue;
+                userPnls[userIdToIdxMap[insideMarket.putBestAskUserId]].pnl += pnlDiffAsk;
+                if (pnlDiffAsk <= spread) {
+                    userPnls[userIdToIdxMap[insideMarket.putBestAskUserId]].pnlAdverse += pnlDiffAsk;
+                }
+
+                console.log("(calculate pnl) Put Bid: ", bid, ", Ask: ", ask, " new bid user pnl: ", 
+                userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnl, 
+                ", new bid user adverse pnl: ", userPnls[userIdToIdxMap[insideMarket.putBestBidUserId]].pnlAdverse);
             }
         });
 

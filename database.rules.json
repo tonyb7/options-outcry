@@ -57,13 +57,13 @@
                         ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 0.03"
                     },
                     "tteDays": {
-                        ".validate": "newData.isNumber() && newData.val() >= 25 && newData.val() <= 99"
+                        ".validate": "newData.isNumber() && newData.val() >= 200 && newData.val() <= 299"
                     },
                     "rc": {
                         ".validate": "newData.isNumber()"
                     },
                     "atmVol": {
-                        ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 0.40"
+                        ".validate": "newData.isNumber() && newData.val() >= 0.40 && newData.val() <= 0.89"
                     },
                     "skew": {
                         ".validate": "newData.isString() && (newData.val() == 'call' || newData.val() == 'put' || newData.val() == 'both')"

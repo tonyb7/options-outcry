@@ -28,10 +28,10 @@ export function generateInitialState(): InitialState {
     stockPrice += 0.005 // stockPrice is price at middle of spread
     let spread = ((Math.floor(Math.random() * 5) * 5) + 5) / 100; // multiple of 0.05 in [0.05, 0.25]
     let riskFreeRate = (Math.floor(Math.random() * 3) + 1) / 100; // [0.01, 0.03]
-    let tteDays = Math.floor(Math.random() * 75) + 25; // [25, 99]
+    let tteDays = Math.floor(Math.random() * 100) + 200; // [200, 299]
     let rc = stockPrice * Math.pow(Math.E, riskFreeRate * (tteDays / 252)) - stockPrice;
     rc = Math.round(rc * 100) / 100;
-    let atmVol = (Math.floor(Math.random() * 36) + 5) / 100; // [0.05, 0.40]
+    let atmVol = (Math.floor(Math.random() * 50) + 40) / 100; // [0.40, 0.89]
     let skewChoices = ['call', 'put', 'both'];
     let skew = skewChoices[Math.floor(Math.random() * skewChoices.length)];
 
