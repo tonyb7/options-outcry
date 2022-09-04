@@ -43,3 +43,5 @@ This step is required or else the changes don't get reflected in the emulator. S
 
 3. In development, the emulator should be picked up by firebase, see `src/firebase.ts`
 
+## Other
+`functions/package.json`'s `scripts/lint` should be `eslint --ext .js,.ts .` but I removed it because I was lazy and eager to deploy.
