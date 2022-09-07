@@ -89,8 +89,8 @@ const GameLog = (props: any) => {
                         style={{ fontSize: 12, fontWeight: 'bold', margin: 10, marginTop: 25 }}
                     >
                         ({formatTime(item.time - item.pnlStats.gameStartedAt, false)}) 
-                        These are PnL statistics if the spread was collected on "correct" markets, 
-                        and only the incorrect leg was traded against on "incorrect" markets. Correct is defined as the 
+                        These are PnL statistics if the spread was collected on &quot;correct&quot; markets, 
+                        and only the incorrect leg was traded against on &quot;incorrect&quot; markets. Correct is defined as the 
                         option fair value being within the inside market: 
                         <Table>
                         {pnlStats.userPnls.map((userpnl: UserPnl, i: number) => (
