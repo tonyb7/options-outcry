@@ -25,6 +25,7 @@ async function InitFirebase(): Promise<void> {
       console.log("Initializing firebase analytics");
       firebase.analytics();
     }
+    console.log("isDev? ", isDev);
     if (isDev) {
       // firebase.database().useEmulator("localhost", 9000);
       console.log("Initializing firebase functions emulator on port 5001");
