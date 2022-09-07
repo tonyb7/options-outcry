@@ -4,13 +4,16 @@
       "node_modules",
       ".git",
       "firebase-debug.log",
-      "firebase-debug.*.log"
+      "firebase-debug.*.log",
+      "functions",
+      "src"
     ],
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
     ],
-    "source": "functions"
+    "source": ".",
+    "runtime": "nodejs16"
   },
   "emulators": {
     "functions": {
@@ -22,10 +25,17 @@
   },
   "hosting": {
     "public": "public",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "nextServer"
+      }
     ]
   }
 }

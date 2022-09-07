@@ -1,13 +1,17 @@
 {
   "name": "options-outcry",
   "version": "0.1.0",
+  "main": "nextServer.js",
   "private": true,
   "scripts": {
+    "build": "npm run build:next && npm run build:functions",
+    "build:functions": "tsc",
+    "build:next": "next build",
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "firebase deploy --only hosting,functions"
+    "deploy": "firebase deploy --only functions:nextServer,hosting",
+    "preinstall": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -19,6 +23,7 @@
     "black-scholes": "^1.1.0",
     "dotenv": "^16.0.1",
     "firebase": "^9.9.2",
+    "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.23.0",
     "moment": "^2.29.4",
     "next": "12.2.5",

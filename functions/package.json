@@ -1,13 +1,13 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "firebase deploy --only functions:createGame",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -15,6 +15,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "black-scholes": "^1.1.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0"
   },
