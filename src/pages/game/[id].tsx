@@ -13,6 +13,7 @@ import NotFoundPage from '../../components/NotFoundPage'
 
 import StockQuote from '../../components/game/StockQuote'
 import StructureQuotes from '../../components/game/StructureQuotes'
+import SecurityInfo from '../../components/game/SecurityInfo'
 import OptionChain from '../../components/game/OptionChain'
 import GameLog from '../../components/game/GameLog'
 import CalculatePnl from '../../components/game/CalculatePnl'
@@ -59,6 +60,7 @@ const GameRoom:NextPage = () => {
                                     </Grid>
                                     <Grid item container xs={4} direction="column">
                                         <StructureQuotes gameId={gameId}/>
+                                        <SecurityInfo gameId={gameId}/>
                                         <CalculatePnl gameId={gameId}/>
                                     </Grid>
                                 </Grid>
