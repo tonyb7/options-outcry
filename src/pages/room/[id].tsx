@@ -122,6 +122,7 @@ const WaitingRoom:NextPage = () => {
         });
         
         let initMarkets: { [userId: string]: any } = {};
+        let initInventory: { [userId: string]: any } = {};
         const users = Object.keys(gameObj.users || {}).sort(
             (a: any, b: any) => gameObj.users[a] - gameObj.users[b]
         );
@@ -149,13 +150,37 @@ const WaitingRoom:NextPage = () => {
                 putBids: initMarketArray,
                 putAsks: initMarketArray,
                 putMarketTimes: initTimesArray
-            }
+            };
+            initInventory[userId] = 
+            {
+                callTransactions: {
+                    strike0Transactions: [0],
+                    strike1Transactions: [0],
+                    strike2Transactions: [0],
+                    strike3Transactions: [0],
+                    strike4Transactions: [0]
+                },
+                putTransactions: {
+                    strike0Transactions: [0],
+                    strike1Transactions: [0],
+                    strike2Transactions: [0],
+                    strike3Transactions: [0],
+                    strike4Transactions: [0]
+                },
+                stockTransactions: [0]
+            };
         });
         firebase.database().ref(`/gameData/${id}/markets`)
             .set(initMarkets)
             .then(() => { })
             .catch((reason) => {
                 console.warn(`Failed to initialize markets in gameData. (${reason})`);
+            });
+        firebase.database().ref(`/gameData/${id}/inventory`)
+            .set(initInventory)
+            .then(() => { })
+            .catch((reason) => {
+                console.warn(`Failed to initialize inventory in gameData. (${reason})`);
             });
     }
 
