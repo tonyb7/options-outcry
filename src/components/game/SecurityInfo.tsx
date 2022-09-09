@@ -29,7 +29,7 @@ const SecurityInfo = (props: SecurityInfoProps) => {
             </Tooltip>
             <Tooltip                             
             arrow
-            title="Days to Expiration"
+            title="Trading Days to Expiration"
             >
                 <Button>{"TTE: " + dte + " days"}</Button>
             </Tooltip>

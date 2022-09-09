@@ -11,7 +11,7 @@ import firebase from "../../firebase";
 import { UserContext } from "../../context";
 import { UserObject } from "../../interfaces";
 
-import { useState, useContext, useMemo, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 
 // Helpful tutorial on working with realtime database + react: 
 //  https://www.youtube.com/watch?v=P-XNZdKQUR0
@@ -20,10 +20,12 @@ type FiveNumbers = [number, number, number, number, number];
 interface Quote {
     callBids: FiveNumbers,
     callAsks: FiveNumbers,
-    callMarketTimes: FiveNumbers,
+    callBidTimes: FiveNumbers,
+    callAskTimes: FiveNumbers,
     putBids: FiveNumbers,
     putAsks: FiveNumbers,
-    putMarketTimes: FiveNumbers
+    putBidTimes: FiveNumbers,
+    putAskTimes: FiveNumbers
 }
 
 interface QuoteEntryProps {
@@ -50,7 +52,7 @@ const QuoteEntry = (props: QuoteEntryProps) => {
 
     const parseQuote = (quotes: Quote | null, isCall: boolean, K_idx: number) => {
         if (!quotes) {
-            return [false, process.env.NO_MARKET, process.env.NO_MARKET] as const;
+            return [false, false, process.env.NO_MARKET, process.env.NO_MARKET] as const;
         }
         let bid: string = process.env.NO_MARKET || "";
         let ask: string = process.env.NO_MARKET || "";
@@ -61,11 +63,12 @@ const QuoteEntry = (props: QuoteEntryProps) => {
             bid = quotes.putBids[K_idx].toString();
             ask = quotes.putAsks[K_idx].toString();
         }
-        let submitted = !(bid === process.env.NO_MARKET || ask === process.env.NO_MARKET);
-        return [submitted, bid, ask] as const;
+        let bidSubmitted = (bid !== process.env.NO_MARKET);
+        let askSubmitted = (ask !== process.env.NO_MARKET);
+        return [bidSubmitted, askSubmitted, bid, ask] as const;
     }
 
-    const [submitted, bid, ask] = parseQuote(quotes, props.isCall, props.K_idx);
+    const [bidSubmitted, askSubmitted, bid, ask] = parseQuote(quotes, props.isCall, props.K_idx);
     const [bidInput, setBidInput] = useState("");
     const [askInput, setAskInput] = useState("");
     const [warningOpen, setWarningOpen] = useState(false);
@@ -73,66 +76,82 @@ const QuoteEntry = (props: QuoteEntryProps) => {
     function isNumeric(str: string) {
         return !isNaN(+str);
     }
-      
-    const handleSubmitQuote = () => {
-        console.log("SUBMIT QUOTE CALLED");
-        if (bidInput.length === 0 || askInput.length === 0) {
-            console.log("SET WARNING OPEN 2");
+
+    const handleSubmitQuote = (quoteInput: string, isBid: boolean) => {
+        if (quoteInput.length == 0 || !isNumeric(quoteInput)) {
             setWarningOpen(true);
             return;
         }
 
-        if (!isNumeric(bidInput) || !isNumeric(askInput)) {
-            console.log("SET WARNING OPEN 1");
-            setWarningOpen(true);
-            return;
-        }
-        
         if (!quotes) {
             return;
         }
-        
-        let bidFloat = parseFloat(bidInput);
-        let askFloat = parseFloat(askInput);
-        bidFloat = Math.round(bidFloat * 100) / 100;
-        askFloat = Math.round(askFloat * 100) / 100;
+
+        let quoteFloat = parseFloat(quoteInput);
+        quoteFloat = Math.round(quoteFloat * 100) / 100;
 
         if (props.isCall) {
-            quotes.callBids[props.K_idx] = bidFloat;
-            quotes.callAsks[props.K_idx] = askFloat;
+            if (isBid) {
+                quotes.callBids[props.K_idx] = quoteFloat;
+                quotes.callBidTimes[props.K_idx] = Date.now();
+            } else {
+                quotes.callAsks[props.K_idx] = quoteFloat;
+                quotes.callAskTimes[props.K_idx] = Date.now();
+            }
         } else {
-            quotes.putBids[props.K_idx] = bidFloat;
-            quotes.putAsks[props.K_idx] = askFloat;
+            if (isBid) {
+                quotes.putBids[props.K_idx] = quoteFloat;
+                quotes.putBidTimes[props.K_idx] = Date.now();
+            } else {
+                quotes.putAsks[props.K_idx] = quoteFloat;
+                quotes.putAskTimes[props.K_idx] = Date.now();
+            }
         }
         firebase.database().ref(databasePath).set(quotes)
             .then(() => console.log("Submitted quote successfully"))
             .catch((reason) => {
-                console.warn(`Failed to submit market (${reason})`);
+                console.warn(`Failed to submit quote (${reason})`);
             });
     }
 
-    const handleCancelQuote = () => {
+    const handleCancelQuote = (isBid: boolean) => {
         if (!quotes) {
             return;
         }
 
         if (props.isCall) {
-            quotes.callBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
-            quotes.callAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+            if (isBid) {
+                quotes.callBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+                quotes.callBidTimes[props.K_idx] = Date.now();
+            } else {
+                quotes.callAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+                quotes.callAskTimes[props.K_idx] = Date.now();
+            }
         } else {
-            quotes.putBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
-            quotes.putAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+            if (isBid) {
+                quotes.putBids[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+                quotes.putBidTimes[props.K_idx] = Date.now();
+            } else {
+                quotes.putAsks[props.K_idx] = parseFloat(process.env.NO_MARKET || "-1");
+                quotes.putAskTimes[props.K_idx] = Date.now();
+            }
         }
+
         firebase.database().ref(databasePath).set(quotes)
             .then(() => console.log("Canceled quote successfully"))
             .catch((reason) => {
-                console.warn(`Failed to cancel market (${reason})`);
+                console.warn(`Failed to cancel quote (${reason})`);
             });
     }
 
-    const handleInputEnter = (event: any) => {
+    const handleInputEnter = (event: any, isBid: boolean) => {
         if (event.key === 'Enter') {
-            handleSubmitQuote();
+            if (isBid) {
+                handleSubmitQuote(bidInput, true);
+            }
+            else {
+                handleSubmitQuote(askInput, false);
+            }
         }
     }
 
@@ -152,9 +171,11 @@ const QuoteEntry = (props: QuoteEntryProps) => {
         alignItems="center"
         style={{ margin: 'auto' }}
         >
-            {submitted ? (
-                    <>
-                    <PointOfSaleIcon visibility="hidden"/>
+            {bidSubmitted ? (
+                <>
+                    <Tooltip arrow title="Cancel bid">
+                        <CancelIcon onClick={() => handleCancelQuote(true)}/>
+                    </Tooltip>
                     <Tooltip arrow title="Your bid">
                         <TextField 
                             disabled 
@@ -164,6 +185,36 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                         >
                         </TextField>
                     </Tooltip>
+                </>
+            ) : (
+                <>
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        autoHideDuration={2500}
+                        open={warningOpen}
+                        onClose={()=> setWarningOpen(false)}
+                        key={'market-enter-error'}
+                    >
+                        <Alert severity="warning">
+                            Invalid quote! Quote must be numerical.
+                        </Alert>
+                    </Snackbar>
+                    <Tooltip arrow title="Submit bid">
+                        <CheckCircleIcon onClick={() => handleSubmitQuote(bidInput, true)}/>
+                    </Tooltip>
+                    <Tooltip arrow title="Enter bid">
+                        <TextField 
+                            size="small" style={{ padding: 5 }}
+                            onKeyDown={e => handleInputEnter(e, true)}
+                            onChange={handleBidChange}
+                            value={bidInput}
+                        >
+                        </TextField>
+                    </Tooltip>
+                </>
+            )}
+            {askSubmitted ? (
+                <>
                     <Tooltip arrow title="Your offer">
                         <TextField 
                             disabled 
@@ -173,12 +224,12 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                         >
                         </TextField>
                     </Tooltip>
-                    <Tooltip arrow title="Cancel quote">
-                        <CancelIcon onClick={handleCancelQuote}/>
+                    <Tooltip arrow title="Cancel offer">
+                        <CancelIcon onClick={() => handleCancelQuote(false)}/>
                     </Tooltip>
-                    </>
-                ) : (
-                    <>
+                </>
+            ) : (
+                <>
                     <Snackbar
                         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                         autoHideDuration={2500}
@@ -187,33 +238,23 @@ const QuoteEntry = (props: QuoteEntryProps) => {
                         key={'market-enter-error'}
                     >
                         <Alert severity="warning">
-                            Quotes must include both bid and ask! Quotes must be numerical.
+                            Invalid quote! Quote must be numerical.
                         </Alert>
                     </Snackbar>
-                    <PointOfSaleIcon visibility="hidden"/>
-                    <Tooltip arrow title="Enter bid">
-                        <TextField 
-                            size="small" style={{ padding: 5 }}
-                            onKeyDown={handleInputEnter}
-                            onChange={handleBidChange}
-                            value={bidInput}
-                        >
-                        </TextField>
-                    </Tooltip>
                     <Tooltip arrow title="Enter offer">
                         <TextField 
                             size="small" style={{ padding: 5 }}
-                            onKeyDown={handleInputEnter}
+                            onKeyDown={e => handleInputEnter(e, false)}
                             onChange={handleAskChange}
                             value={askInput}
                         >
                         </TextField>
                     </Tooltip>
-                    <Tooltip arrow title="Submit quote">
-                        <CheckCircleIcon onClick={handleSubmitQuote}/>
+                    <Tooltip arrow title="Submit offer">
+                        <CheckCircleIcon onClick={() => handleSubmitQuote(askInput, false)}/>
                     </Tooltip>
-                    </>
-                )}
+                </>
+            )}
         </Box>
     );
 }

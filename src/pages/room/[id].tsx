@@ -146,10 +146,12 @@ const WaitingRoom:NextPage = () => {
             {
                 callBids: initMarketArray,
                 callAsks: initMarketArray,
-                callMarketTimes: initTimesArray,
+                callBidTimes: initTimesArray,
+                callAskTimes: initTimesArray,
                 putBids: initMarketArray,
                 putAsks: initMarketArray,
-                putMarketTimes: initTimesArray
+                putBidTimes: initTimesArray,
+                putAskTimes: initTimesArray
             };
             initInventory[userId] = 
             {

@@ -129,10 +129,12 @@
                     "$user": {
                         "callBids": {},
                         "callAsks": {},
-                        "callMarketTimes": {},
+                        "callBidTimes": {},
+                        "callAskTimes": {},
                         "putBids": {},
                         "putAsks": {},
-                        "putMarketTimes": {}
+                        "putBidTimes": {},
+                        "putAskTimes": {}
                     }
                 },
                 "inventory": {

@@ -1,6 +1,6 @@
 
 interface UserMarkets { 
-    [userId: string]: { bid: number, ask: number, time: number } 
+    [userId: string]: { bid: number, ask: number, bidTime: number, askTime: number } 
 }
 export interface Markets {
     strike: number,
@@ -21,12 +21,14 @@ export function GetFormattedMarkets(gameDataMarkets: any, strikes: Array<number>
             userCallMarkets[userId] = { 
                 bid: userMarkets.callBids[i], 
                 ask: userMarkets.callAsks[i], 
-                time: userMarkets.callMarketTimes[i] 
+                bidTime: userMarkets.callBidTimes[i],
+                askTime: userMarkets.callAskTimes[i]
             };
             userPutMarkets[userId] = { 
                 bid: userMarkets.putBids[i], 
                 ask: userMarkets.putAsks[i], 
-                time: userMarkets.callMarketTimes[i] 
+                bidTime: userMarkets.callBidTimes[i],
+                askTime: userMarkets.callAskTimes[i]
             };
         }
     
@@ -87,7 +89,8 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
 
     let callBids: Array<number> = [];
     let callAsks: Array<number> = [];
-    let callTimes: Array<number> = [];
+    let callBidTimes: Array<number> = [];
+    let callAskTimes: Array<number> = [];
     let callUsers: Array<string> = [];
 
     for (let userId in market.userCallMarkets) {
@@ -98,14 +101,16 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
         if (valid) {
             callBids.push(thisMarket.bid);
             callAsks.push(thisMarket.ask);
-            callTimes.push(thisMarket.time);
+            callBidTimes.push(thisMarket.bidTime);
+            callAskTimes.push(thisMarket.askTime);
             callUsers.push(userId);
         }
     }
 
     let putBids: Array<number> = [];
     let putAsks: Array<number> = [];
-    let putTimes: Array<number> = [];
+    let putBidTimes: Array<number> = [];
+    let putAskTimes: Array<number> = [];
     let putUsers: Array<string> = [];
     for (let userId in market.userPutMarkets) {
         let thisMarket = market.userPutMarkets[userId];
@@ -115,7 +120,8 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
         if (valid) {
             putBids.push(thisMarket.bid);
             putAsks.push(thisMarket.ask);
-            putTimes.push(thisMarket.time);
+            putBidTimes.push(thisMarket.bidTime);
+            putAskTimes.push(thisMarket.askTime);
             putUsers.push(userId);
         }
     }
@@ -125,7 +131,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     if (callBids.length === 0) {
         callBestBid = "---";
     } else {
-        const callBestBidIdx = findByPriceTime(callBids, callTimes, (a, b) => a < b);
+        const callBestBidIdx = findByPriceTime(callBids, callBidTimes, (a, b) => a < b);
         callBestBid = callBids[callBestBidIdx].toFixed(2);
         callBestBidUserId = callUsers[callBestBidIdx];
     }
@@ -135,7 +141,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     if (callAsks.length === 0) {
         callBestAsk = "---";
     } else {
-        const callBestAskIdx = findByPriceTime(callAsks, callTimes, (a, b) => a > b);
+        const callBestAskIdx = findByPriceTime(callAsks, callAskTimes, (a, b) => a > b);
         callBestAsk = callAsks[callBestAskIdx].toFixed(2);
         callBestAskUserId = callUsers[callBestAskIdx];
     }
@@ -145,7 +151,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     if (putBids.length === 0) {
         putBestBid = "---";
     } else {
-        const putBestBidIdx = findByPriceTime(putBids, putTimes, (a, b) => a < b);
+        const putBestBidIdx = findByPriceTime(putBids, putBidTimes, (a, b) => a < b);
         putBestBid = putBids[putBestBidIdx].toFixed(2);
         putBestBidUserId = putUsers[putBestBidIdx];
     }
@@ -155,7 +161,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     if (putAsks.length === 0) {
         putBestAsk = "---";
     } else {
-        const putBestAskIdx = findByPriceTime(putAsks, putTimes, (a, b) => a > b);
+        const putBestAskIdx = findByPriceTime(putAsks, putAskTimes, (a, b) => a > b);
         putBestAsk = putAsks[putBestAskIdx].toFixed(2);
         putBestAskUserId = putUsers[putBestAskIdx];
     }
