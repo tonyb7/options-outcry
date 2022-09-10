@@ -24,7 +24,11 @@ const OptionQuoteRow = (props: OptionQuoteRowProps) => {
                     bidUserId={insideMarkets.callBestBidUserId} 
                     askString={insideMarkets.callBestAsk}
                     askUserId={insideMarkets.callBestAskUserId}
-                />
+                    gameId={props.gameId}
+                    K={props.K} 
+                    K_idx={props.K_idx}
+                    isCall={true} 
+            />
                 <QuoteEntry 
                     gameId={props.gameId}
                     K={props.K} 
@@ -41,6 +45,10 @@ const OptionQuoteRow = (props: OptionQuoteRowProps) => {
                     bidUserId={insideMarkets.putBestBidUserId} 
                     askString={insideMarkets.putBestAsk}
                     askUserId={insideMarkets.putBestAskUserId}
+                    gameId={props.gameId}
+                    K={props.K}
+                    K_idx={props.K_idx}
+                    isCall={false}
                 />
                 <QuoteEntry 
                     gameId={props.gameId} 
