@@ -23,6 +23,14 @@ const OptionQuote = (props: OptionQuoteProps) => {
         askId = GetUserNameFromId(props.askUserId);
     }
 
+    const handleSell = () => {
+        console.log("SOLD!");
+    }
+
+    const handleBuy = () => {
+        console.log("TAKE 'EM");
+    }
+
     return (
         <>
             <Box 
@@ -31,11 +39,37 @@ const OptionQuote = (props: OptionQuoteProps) => {
             alignItems="center"
             style={{ margin: 'auto' }}
             >
-                <Tooltip arrow title={"Best Bid - " + bidId}>
-                    <Button>{props.bidString}</Button>
+                <Tooltip 
+                    arrow 
+                    title={
+                        <div style={{ textAlign: "center" }}>
+                            {"Best Bid - " + bidId}
+                            <br/>
+                            {"(Click to Sell)"}
+                        </div>
+                    }
+                >
+                    <Button
+                        onClick={handleSell}
+                    >
+                        {props.bidString}
+                    </Button>
                 </Tooltip>
-                <Tooltip arrow title={"Best Ask - " + askId}>
-                    <Button>{props.askString}</Button>
+                <Tooltip 
+                    arrow 
+                    title={
+                        <div style={{ textAlign: "center" }}>
+                            {"Best Ask - " + askId}
+                            <br/>
+                            {"(Click to Buy)"}
+                        </div>
+                    }
+                >
+                    <Button
+                        onClick={handleBuy}
+                    >
+                        {props.askString}
+                    </Button>
                 </Tooltip>
             </Box>
         </>
