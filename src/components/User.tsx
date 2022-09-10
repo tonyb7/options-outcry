@@ -18,7 +18,12 @@ const User = ({ id } : UserParams) => {
 }
 
 export function GetUserNameFromId(id: string): string {
-    const [user, _] = useFirebaseRef(`users/${id}`);
+    const dbPath = `users/${id}`;
+    const ref = firebase.database().ref(dbPath);
+    let user: any;
+    ref.on("value", (snapshot) => {
+        user = snapshot.val();
+    });
     const userObj = user as unknown as UserObject
     return userObj ? userObj.name : "...";
 }

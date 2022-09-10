@@ -91,19 +91,23 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     let callAsks: Array<number> = [];
     let callBidTimes: Array<number> = [];
     let callAskTimes: Array<number> = [];
-    let callUsers: Array<string> = [];
+    let callBidUsers: Array<string> = [];
+    let callAskUsers: Array<string> = [];
 
     for (let userId in market.userCallMarkets) {
         let thisMarket = market.userCallMarkets[userId];
 
-         // As of now markets need to be two-sided
-        let valid: boolean = thisMarket.bid != NO_MARKET && thisMarket.ask != NO_MARKET;
-        if (valid) {
+        let bidValid: boolean = thisMarket.bid != NO_MARKET;
+        let askValid: boolean = thisMarket.ask != NO_MARKET;
+        if (bidValid) {
             callBids.push(thisMarket.bid);
-            callAsks.push(thisMarket.ask);
             callBidTimes.push(thisMarket.bidTime);
+            callBidUsers.push(userId);
+        }
+        if (askValid) {
+            callAsks.push(thisMarket.ask);
             callAskTimes.push(thisMarket.askTime);
-            callUsers.push(userId);
+            callAskUsers.push(userId);
         }
     }
 
@@ -111,18 +115,22 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     let putAsks: Array<number> = [];
     let putBidTimes: Array<number> = [];
     let putAskTimes: Array<number> = [];
-    let putUsers: Array<string> = [];
+    let putBidUsers: Array<string> = [];
+    let putAskUsers: Array<string> = [];
     for (let userId in market.userPutMarkets) {
         let thisMarket = market.userPutMarkets[userId];
 
-         // As of now markets need to be two-sided
-        let valid: boolean = thisMarket.bid != NO_MARKET && thisMarket.ask != NO_MARKET;
-        if (valid) {
+        let bidValid: boolean = thisMarket.bid != NO_MARKET;
+        let askValid: boolean = thisMarket.ask != NO_MARKET;
+        if (bidValid) {
             putBids.push(thisMarket.bid);
-            putAsks.push(thisMarket.ask);
             putBidTimes.push(thisMarket.bidTime);
+            putBidUsers.push(userId);
+        }
+        if (askValid) {
+            putAsks.push(thisMarket.ask);
             putAskTimes.push(thisMarket.askTime);
-            putUsers.push(userId);
+            putAskUsers.push(userId);
         }
     }
 
@@ -133,7 +141,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     } else {
         const callBestBidIdx = findByPriceTime(callBids, callBidTimes, (a, b) => a < b);
         callBestBid = callBids[callBestBidIdx].toFixed(2);
-        callBestBidUserId = callUsers[callBestBidIdx];
+        callBestBidUserId = callBidUsers[callBestBidIdx];
     }
 
     let callBestAsk: string;
@@ -143,7 +151,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     } else {
         const callBestAskIdx = findByPriceTime(callAsks, callAskTimes, (a, b) => a > b);
         callBestAsk = callAsks[callBestAskIdx].toFixed(2);
-        callBestAskUserId = callUsers[callBestAskIdx];
+        callBestAskUserId = callAskUsers[callBestAskIdx];
     }
 
     let putBestBid: string;
@@ -153,7 +161,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     } else {
         const putBestBidIdx = findByPriceTime(putBids, putBidTimes, (a, b) => a < b);
         putBestBid = putBids[putBestBidIdx].toFixed(2);
-        putBestBidUserId = putUsers[putBestBidIdx];
+        putBestBidUserId = putBidUsers[putBestBidIdx];
     }
 
     let putBestAsk: string;
@@ -163,7 +171,7 @@ export function GetInsideMarkets(market: Markets) : InsideMarkets
     } else {
         const putBestAskIdx = findByPriceTime(putAsks, putAskTimes, (a, b) => a > b);
         putBestAsk = putAsks[putBestAskIdx].toFixed(2);
-        putBestAskUserId = putUsers[putBestAskIdx];
+        putBestAskUserId = putAskUsers[putBestAskIdx];
     }
 
     let insideMarkets: InsideMarkets = {
